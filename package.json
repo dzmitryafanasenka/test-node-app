@@ -5,15 +5,16 @@
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix --config=.eslintrc './**/*.js'"
+    "lint": "eslint --fix --config=.eslintrc './src/*.js'"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "eslint": "^7.32.0",
+    "eslint-plugin-sort-requires": "^2.1.0",
     "nodemon": "^2.0.13",
-    "eslint-plugin-sort-requires": "^2.1.0"
+    "sequelize-cli": "^6.2.0"
   },
   "dependencies": {
     "dotenv": "^10.0.0",

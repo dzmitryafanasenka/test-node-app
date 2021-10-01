@@ -1,9 +1,9 @@
-const {usersRoute} = require('./users/index')
+const { usersRoute } = require('./users/index');
 
 function applyRoutes(app) {
-  usersRoute(app);
+	usersRoute(app);
 }
 
 module.exports = {
-  applyRoutes
-}
+	applyRoutes
+};
