@@ -4,10 +4,15 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix --config=.eslintrc './src/*.js'"
+    "lint": "eslint --fix --config=.eslintrc './src/*.js'",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:start": "docker-compose start",
+    "db:stop": "docker-compose stop",
+    "db:migrate": "cd src && npx sequelize db:migrate",
+    "db:migrate:undo": "cd src && npx sequelize db:migrate:undo"
   },
-  "author": "",
+  "author": "Igor Lyatskiy",
   "license": "ISC",
   "description": "",
   "devDependencies": {
