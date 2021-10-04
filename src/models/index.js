@@ -8,25 +8,25 @@ const db = {};
 
 const { DB_NAME, DB_ADMIN, DB_HOST, DB_PASSWORD } = process.env;
 const sequelize = new Sequelize(DB_NAME, DB_ADMIN, DB_PASSWORD, {
-  dialect: 'postgres',
-  host: DB_HOST,
-  logging: (msg) => logger.mark(msg)
+	dialect: 'postgres',
+	host: DB_HOST,
+	logging: (msg) => logger.mark(msg)
 });
 
 fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
+	.readdirSync(__dirname)
+	.filter((file) => {
+		return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+	})
+	.forEach((file) => {
+		const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+		db[model.name] = model;
+	});
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+Object.keys(db).forEach((modelName) => {
+	if (db[modelName].associate) {
+		db[modelName].associate(db);
+	}
 });
 
 db.sequelize = sequelize;

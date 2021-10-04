@@ -1,23 +1,32 @@
-const {userImage} = require('../index');
+const { userImage } = require('../index');
 
 async function addUser(data) {
-  const result = await userImage.create({
-    id: data.id,
-    email: data.email,
-    password: data.password,
-    nickname: data.nickname
-  });
-  return result;
+	const result = await userImage.create({
+		email: data.email,
+		password: data.password
+	});
+
+	return result && result.dataValues;
+}
+
+async function deleteUser() {
+
 }
 
 async function getAllUsers() {
-  return new Promise(async (resolve, reject) => {
-    const result = await userImage.findAll();
-    resolve(result);
-  })
+	const result = await userImage.findAll();
+
+	return result && result.dataValues;
+}
+
+async function getUser(email) {
+	const result = await userImage.findOne({ where: { email } });
+
+	return result && result.dataValues;
 }
 
 module.exports = {
-  addUser,
-  getAllUsers
+	addUser,
+	getAllUsers,
+	getUser
 };
