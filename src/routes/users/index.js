@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const logger = require('../../logger');
+const sendVerificationMail = require('../../mail');
 const { addUser, getAllUsers, getUser } = require('../../db/users/index');
 const { authenticateToken } = require('../../middleware/auth');
 
@@ -41,8 +42,8 @@ function usersRoute(router) {
 					expiresIn: '5m'
 				}
 			);
-
 			user.token = token;
+			sendVerificationMail(user.email).catch((e) => logger.error(e));
 			res.status(201).json(user);
 		} catch (error) {
 			logger.error(error);
