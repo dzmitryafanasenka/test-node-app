@@ -1,11 +1,13 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const logger = require('../../logger');
-const sendVerificationMail = require('../../mail');
-const { addUser, getAllUsers, getUser } = require('../../db/users/index');
+const sendVerificationMail = require('./verificationEmail');
+const { addUser, activateUser, getAllUsers, getUser } = require('../../db/users/index');
 const { authenticateToken } = require('../../middleware/auth');
+const { deleteUser } = require('../../db/users');
 
 function usersRoute(router) {
 	router.get('/', async (req, res) => {
@@ -30,9 +32,12 @@ function usersRoute(router) {
 			}
 
 			const encryptedPassword = await bcrypt.hash(password, 10);
+			const activationCode = crypto.randomBytes(32).toString('hex');
 			const user = await addUser({
 				email: email.toLowerCase(),
-				password: encryptedPassword
+				password: encryptedPassword,
+				activationCode,
+				activated: false
 			});
 
 			const token = jwt.sign(
@@ -43,9 +48,16 @@ function usersRoute(router) {
 				}
 			);
 			user.token = token;
-			sendVerificationMail(user.email).catch((e) => logger.error(e));
+			try {
+				await sendVerificationMail(user.email, user.id, activationCode);
+			} catch (e) {
+				logger.error('Can not send verification email', e);
+
+				return res.status(400).send('Can not send verification email');
+			}
 			res.status(201).json(user);
 		} catch (error) {
+			res.status(400).send('An error occurred');
 			logger.error(error);
 		}
 	});
@@ -83,6 +95,41 @@ function usersRoute(router) {
 	router.post('/', (req, res) => {
 		addUser(req.body);
 		res.send('Done!');
+	});
+
+	router.get('/verify/:id/:token', async (req, res) => {
+		try {
+			const user = await getUser(null, req.params.id);
+			if (!user) return res.status(400).send('Invalid link');
+
+			const token = user.activationCode;
+			if (!token) return res.status(400).send('Invalid link');
+
+			const updateRequest = await activateUser(user.id);
+
+			if (!updateRequest) return res.status(500).send('Can\'t verify user');
+			//res.redirect(`${process.env.CLIENT_URL}/login`)
+			res.send('Email verified successfully');
+		} catch (error) {
+			res.status(400).send('An error occurred');
+			logger.error(error);
+		}
+	});
+
+	router.delete('/user/:id', authenticateToken, async (req, res) => {
+		try {
+			if(+req.query.id!==+req.user.id) return res.status(403).send('Forbidden');
+			const user = await getUser(null, req.params.id);
+			if(!user) return res.status(404).send('User does not exist');
+
+			const deleteResult = await deleteUser(req.params.id);
+			if(!deleteResult) return  res.status(500).send('Can not delete user');
+
+			res.send('User has been deleted');
+		} catch (error) {
+			res.status(400).send('An error occurred');
+			logger.error(error);
+		}
 	});
 
 }

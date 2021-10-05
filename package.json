@@ -10,7 +10,8 @@
     "db:start": "docker-compose start",
     "db:stop": "docker-compose stop",
     "db:migrate": "cd src && npx sequelize db:migrate",
-    "db:migrate:undo": "cd src && npx sequelize db:migrate:undo"
+    "db:migrate:undo": "cd src && npx sequelize db:migrate:undo",
+    "db:restore": "cd src && npx sequelize db:migrate:undo && npx sequelize db:migrate"
   },
   "author": "Igor Lyatskiy",
   "license": "ISC",

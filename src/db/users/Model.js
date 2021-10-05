@@ -15,8 +15,17 @@ module.exports = (sequelize) => {
 		password: {
 			type: Sequelize.STRING,
 			allowNull: false
+		},
+		activationCode: {
+			type: Sequelize.STRING,
+			allowNull: false
+		},
+		activated: {
+			type: Sequelize.BOOLEAN,
+			allowNull: false
 		}
-	},{
+
+	}, {
 		timestamps: false
 	});
 };

@@ -5,7 +5,7 @@ const logger = require('./logger');
 const { applyRoutes } = require('./routes/index');
 const { sequelize } = require('./db/index');
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.APP_PORT || 8080;
 
 class App {
 	constructor() {
