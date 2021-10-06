@@ -4,14 +4,15 @@ module.exports = (sequelize) => {
 	return sequelize.define('posts', {
 		id: {
 			type: Sequelize.INTEGER,
-			autoIncrement: false,
-			allowNull: false
-		},
-		postId: {
-			type: Sequelize.INTEGER,
 			autoIncrement: true,
 			primaryKey: true,
 			allowNull: false
+		},
+		userId: {
+			type: Sequelize.INTEGER,
+			autoIncrement: false,
+			allowNull: false,
+			foreignKey: true
 		},
 		title: {
 			type: Sequelize.STRING,
@@ -22,11 +23,11 @@ module.exports = (sequelize) => {
 			allowNull: false
 		},
 		likes: {
-			type: Sequelize.NUMBER,
+			type: Sequelize.INTEGER,
 			allowNull: true
 		},
 		dislikes: {
-			type: Sequelize.NUMBER,
+			type: Sequelize.INTEGER,
 			allowNull: true
 		}
 	}, {

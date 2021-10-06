@@ -9,9 +9,9 @@
     "db:down": "docker-compose down",
     "db:start": "docker-compose start",
     "db:stop": "docker-compose stop",
-    "db:migrate": "cd src && npx sequelize db:migrate",
-    "db:migrate:undo": "cd src && npx sequelize db:migrate:undo",
-    "db:restore": "cd src && npx sequelize db:migrate:undo && npx sequelize db:migrate"
+    "db:migrate": "sequelize db:migrate",
+    "db:migrate:undo": "sequelize db:migrate:undo",
+    "db:restore": "sequelize db:migrate:undo && npx sequelize db:migrate"
   },
   "author": "Igor Lyatskiy",
   "license": "ISC",
