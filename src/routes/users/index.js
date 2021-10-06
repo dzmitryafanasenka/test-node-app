@@ -5,17 +5,18 @@ require('dotenv').config();
 
 const logger = require('../../logger');
 const sendVerificationMail = require('./verificationEmail');
-const { addUser, activateUser, getAllUsers, getUser } = require('../../db/users/index');
+const { addUser, activateUser, getAllUsers, getUser } = require('../../models/users/index');
 const { authenticateToken } = require('../../middleware/auth');
-const { deleteUser } = require('../../db/users');
+const { deleteUser } = require('../../models/users');
 
 function usersRoute(router) {
-	router.get('/', async (req, res) => {
+	router.get('/users', async (req, res) => {
 		try {
 			const data = await getAllUsers();
 			res.send(data);
 		} catch (error) {
-			res.sendStatus(500);
+			res.status(500).send('Can not get all users');
+			logger.error('While getting all users', error);
 		}
 	});
 
@@ -44,7 +45,7 @@ function usersRoute(router) {
 				{ id: user.id, email },
 				process.env.ACCESS_TOKEN_SECRET,
 				{
-					expiresIn: '5m'
+					expiresIn: process.env.TOKEN_EXPIRE_TIME
 				}
 			);
 			user.token = token;
@@ -78,7 +79,7 @@ function usersRoute(router) {
 					{ id: user.id, email },
 					process.env.ACCESS_TOKEN_SECRET,
 					{
-						expiresIn: '5m'
+						expiresIn: process.env.TOKEN_EXPIRE_TIME
 					}
 				);
 
@@ -116,14 +117,14 @@ function usersRoute(router) {
 		}
 	});
 
-	router.delete('/user/:id', authenticateToken, async (req, res) => {
+	router.delete('/user', authenticateToken, async (req, res) => {
 		try {
-			if(+req.query.id!==+req.user.id) return res.status(403).send('Forbidden');
-			const user = await getUser(null, req.params.id);
-			if(!user) return res.status(404).send('User does not exist');
+			const id = req.user.id;
+			const user = await getUser(null, id);
+			if (!user) return res.status(404).send('User does not exist');
 
-			const deleteResult = await deleteUser(req.params.id);
-			if(!deleteResult) return  res.status(500).send('Can not delete user');
+			const deleteResult = await deleteUser(id);
+			if (!deleteResult) return res.status(500).send('Can not delete user');
 
 			res.send('User has been deleted');
 		} catch (error) {

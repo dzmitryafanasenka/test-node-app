@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const logger = require('./logger');
 const { applyRoutes } = require('./routes/index');
-const { sequelize } = require('./db/index');
+const { sequelize } = require('./models/index');
 
 const PORT = process.env.APP_PORT || 8080;
 
@@ -15,7 +15,7 @@ class App {
 		applyRoutes(this.express);
 
 		this.express.listen(PORT, () => {
-			logger.info(`Server has succesfully started on port ${PORT}`);
+			logger.info(`Server has successfully started on port ${PORT}`);
 		});
 
 		this.checkPgConnect();

@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "lint": "eslint --fix --config=.eslintrc './src/*.js'",
+    "lint": "eslint --fix --config=.eslintrc './src/**/*.js'",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
     "db:start": "docker-compose start",
