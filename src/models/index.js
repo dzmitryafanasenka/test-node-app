@@ -4,14 +4,15 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 
+const logger = require('../logger');
 const postModel = require('./posts/Model');
 const userModel = require('./users/Model');
-const logger = require('../logger')
+const commentsModel = require('./comments/Model')
 
 const basename = path.basename(__filename);
 const db = {};
 
-const {DB_NAME, DB_ADMIN, DB_HOST, DB_PASSWORD} = process.env;
+const { DB_NAME, DB_ADMIN, DB_HOST, DB_PASSWORD } = process.env;
 const sequelize = new Sequelize(DB_NAME, DB_ADMIN, DB_PASSWORD, {
 	dialect: 'postgres',
 	host: DB_HOST,
@@ -34,11 +35,13 @@ Object.keys(db).forEach((modelName) => {
 	}
 });
 
-const userImage = userModel(sequelize)
-const postImage = userModel(sequelize)
+const userImage = userModel(sequelize);
+const postImage = userModel(sequelize);
+const commentsImage = commentsModel(sequelize);
 
 module.exports = {
 	sequelize,
 	userImage,
-	postImage
+	postImage,
+	commentsImage
 };
