@@ -1,6 +1,4 @@
-const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, Sequelize) => {
 	return sequelize.define('posts', {
 		id: {
 			type: Sequelize.INTEGER,
@@ -22,11 +20,11 @@ module.exports = (sequelize) => {
 			allowNull: false
 		},
 		likes: {
-			type: Sequelize.NUMBER,
+			type: Sequelize.INTEGER,
 			allowNull: true
 		},
 		dislikes: {
-			type: Sequelize.NUMBER,
+			type: Sequelize.INTEGER,
 			allowNull: true
 		}
 	}, {

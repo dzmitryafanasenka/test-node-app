@@ -1,47 +1,32 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
 const Sequelize = require('sequelize');
 
-const logger = require('../logger');
-const postModel = require('./posts/Model');
-const userModel = require('./users/Model');
-const commentsModel = require('./comments/Model')
+const logger = require('../common/logger')('sequelize');
+const config = require('../config')
 
-const basename = path.basename(__filename);
+const dbConfig = config.db;
 const db = {};
 
-const { DB_NAME, DB_ADMIN, DB_HOST, DB_PASSWORD } = process.env;
-const sequelize = new Sequelize(DB_NAME, DB_ADMIN, DB_PASSWORD, {
-	dialect: 'postgres',
-	host: DB_HOST,
-	logging: (msg) => logger.mark(msg)
+logger.info(`Connecting to the host - [ ${dbConfig.host} ], database - [ ${dbConfig.database} ]`)
+
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+	dialect: dbConfig.dialect,
+	host: dbConfig.host,
+	logging: (msg) => logger.trace(msg)
 });
 
-fs
-	.readdirSync(__dirname)
-	.filter((file) => {
-		return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-	})
-	.forEach((file) => {
-		const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-		db[model.name] = model;
-	});
+db.posts = require('./posts.model')(sequelize, Sequelize)
+db.users = require('./users.model')(sequelize, Sequelize)
+db.comments = require('./comments.model')(sequelize, Sequelize)
 
-Object.keys(db).forEach((modelName) => {
-	if (db[modelName].associate) {
-		db[modelName].associate(db);
-	}
-});
+db.users.hasMany(db.posts, {as: 'posts'});
+db.posts.belongsTo(db.users, {
+	foreignKey: 'userId',
+	as: 'user'
+})
 
-const userImage = userModel(sequelize);
-const postImage = userModel(sequelize);
-const commentsImage = commentsModel(sequelize);
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-module.exports = {
-	sequelize,
-	userImage,
-	postImage,
-	commentsImage
-};
+module.exports = db;
