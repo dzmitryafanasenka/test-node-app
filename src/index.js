@@ -1,13 +1,13 @@
 const express = require('express');
 require('dotenv').config();
 
-const config = require('./config')
+const config = require('./config');
 const logger = require('./common/logger')('app');
-const {sequelize} = require('./models/index');
+const { sequelize } = require('./models/index');
 
-const authController = require('./controllers/auth')
-const postsController = require('./controllers/posts')
-const usersController = require('./controllers/users')
+const authController = require('./controllers/auth');
+const postsController = require('./controllers/posts');
+const usersController = require('./controllers/users');
 
 const PORT = config.app.port || 8080;
 
@@ -16,9 +16,9 @@ class App {
 		this.express = new express();
 		this.express.use(express.json());
 
-		this.express.use('/users', usersController)
+		this.express.use('/users', usersController);
 		this.express.use('/', authController);
-		this.express.use('/posts', postsController)
+		this.express.use('/posts', postsController);
 
 		this.express.listen(PORT, () => {
 			logger.info(`Server has successfully started on port ${PORT}`);

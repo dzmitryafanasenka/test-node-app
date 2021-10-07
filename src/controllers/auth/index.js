@@ -1,17 +1,18 @@
-const app = require('express')
+const app = require('express');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 
-const config = require('../../config')
-const logger = require('../../common/logger')('AuthController')
+const config = require('../../config');
+const logger = require('../../common/logger')('AuthController');
 const usersService = require('../../services/users.service').instance();
 
 const authRouter = app.Router();
 
 authRouter.post('/signup', async (req, res) => {
 	try {
-		const {email, password} = req.body;
+		const { email, password } = req.body;
 		if (!(email && password)) {
 			res.status(400).send('All input is required!');
 		}
@@ -23,7 +24,7 @@ authRouter.post('/signup', async (req, res) => {
 
 		const encryptedPassword = await bcrypt.hash(password, 10);
 		const activationCode = crypto.randomBytes(32).toString('hex');
-		const user = await addUser({
+		const user = await usersService.addUser({
 			email: email.toLowerCase(),
 			password: encryptedPassword,
 			activationCode,
@@ -31,7 +32,7 @@ authRouter.post('/signup', async (req, res) => {
 		});
 
 		const token = jwt.sign(
-			{id: user.id, email},
+			{ id: user.id, email },
 			process.env.ACCESS_TOKEN_SECRET,
 			{
 				expiresIn: process.env.TOKEN_EXPIRE_TIME
@@ -54,7 +55,7 @@ authRouter.post('/signup', async (req, res) => {
 
 authRouter.post('/login', async (req, res) => {
 	try {
-		const {email, password} = req.body;
+		const { email, password } = req.body;
 
 		if (!(email && password)) {
 			res.status(400).send('All input is required');
@@ -65,7 +66,7 @@ authRouter.post('/login', async (req, res) => {
 		const userStatus = user && (await bcrypt.compare(password, user.password));
 		if (userStatus) {
 			const token = jwt.sign(
-				{id: user.id, email},
+				{ id: user.id, email },
 				process.env.ACCESS_TOKEN_SECRET,
 				{
 					expiresIn: process.env.TOKEN_EXPIRE_TIME
@@ -84,13 +85,13 @@ authRouter.post('/login', async (req, res) => {
 
 authRouter.get('/verify/:id/:token', async (req, res) => {
 	try {
-		const user = await getUser(null, req.params.id);
+		const user = await usersService.getUser(null, req.params.id);
 		if (!user) return res.status(400).send('Invalid link');
 
 		const token = user.activationCode;
 		if (!token) return res.status(400).send('Invalid link');
 
-		const updateRequest = await activateUser(user.id);
+		const updateRequest = await usersService.activateUser(user.id);
 
 		if (!updateRequest) return res.status(500).send('Can\'t verify user');
 		//res.redirect(`${process.env.CLIENT_URL}/login`)
@@ -103,6 +104,7 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 
 async function sendVerificationMail(address, id, activationCode) {
 	const verificationUrl = `http://${config.app.host}:${config.app.port}/verify/${id}/${activationCode}`;
+	console.log(config.mail.user, config.mail.password);
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		port: 587,

@@ -6,13 +6,13 @@ module.exports = (sequelize, Sequelize) => {
 			primaryKey: true,
 			allowNull: false
 		},
-		id: {
+		userId: {
 			type: Sequelize.INTEGER,
-			allowNull: false
+			foreignKey: true
 		},
 		postId: {
 			type: Sequelize.INTEGER,
-			allowNull: false
+			foreignKey: true
 		},
 		body: {
 			type: Sequelize.STRING,

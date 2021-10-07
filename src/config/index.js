@@ -1,4 +1,4 @@
-const database = require('./database')
+const database = require('./database');
 
 const configuration = {
 	db: database,
@@ -17,6 +17,6 @@ const configuration = {
 		secret: process.env.ACCESS_TOKEN_SECRET,
 		exp: process.env.TOKEN_EXPIRE_TIME
 	}
-}
+};
 
-module.exports = configuration
+module.exports = configuration;

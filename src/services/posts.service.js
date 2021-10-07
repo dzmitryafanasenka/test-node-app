@@ -1,4 +1,4 @@
-const db = require('../models')
+const db = require('../models');
 const logger = require('../common/logger')('PostsService');
 
 class PostsService {
@@ -29,21 +29,21 @@ class PostsService {
 	}
 
 	async getUserPosts(id) {
-		const result = await this._posts.findAll({where: {id}});
+		const result = await this._posts.findAll({ where: { id } });
 
 		return result;
 	}
 
 	async getPostById(postId) {
-		const result = await this._posts.findOne({where: {postId}});
+		const result = await this._posts.findOne({ where: { postId } });
 
 		return result;
 	}
 
 	async updatePost(data) {
 		await this._posts.update(
-			{body: data.body, title: data.title},
-			{where: {postId: data.postId}}
+			{ body: data.body, title: data.title },
+			{ where: { postId: data.postId } }
 		);
 		const result = await getPostById(data.postId);
 
@@ -52,13 +52,13 @@ class PostsService {
 
 	async deletePost(postId) {
 		const result = await this._posts.destroy({
-			where: {postId}
+			where: { postId }
 		});
 
 		return result;
 	}
 }
 
-const postsService = new PostsService()
+const postsService = new PostsService();
 
-module.exports = PostsService
+module.exports = PostsService;

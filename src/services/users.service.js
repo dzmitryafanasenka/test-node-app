@@ -1,5 +1,5 @@
-const db = require('../models')
-const logger = require('../common/logger')('UsersService')
+const db = require('../models');
+const logger = require('../common/logger')('UsersService');
 
 class UsersService {
 	constructor() {
@@ -7,7 +7,7 @@ class UsersService {
 	}
 
 	static instance() {
-		return userService
+		return userService;
 	}
 
 	async addUser(data) {
@@ -23,8 +23,8 @@ class UsersService {
 
 	async activateUser(id) {
 		const result = await this._users.update(
-			{activated: true},
-			{where: {id}}
+			{ activated: true },
+			{ where: { id } }
 		);
 
 		return result;
@@ -32,14 +32,18 @@ class UsersService {
 
 	async deleteUser(id) {
 		const result = await this._users.destroy({
-			where: {id}
+			where: { id }
 		});
 
 		return result;
 	}
 
 	async getAllUsers() {
-		const result = await this._users.findAll();
+		const result = await this._users.findAll({
+			include: [{
+				model: db.posts
+			}]
+		});
 
 		return result;
 	}
@@ -47,9 +51,9 @@ class UsersService {
 	async getUser(email, id) {
 		let result;
 		if (email) {
-			result = await this._users.findOne({where: {email}});
+			result = await this._users.findOne({ where: { email } });
 		} else if (id) {
-			result = await this._users.findOne({where: {id}});
+			result = await this._users.findOne({ where: { id } });
 		}
 
 		return result && result.dataValues;

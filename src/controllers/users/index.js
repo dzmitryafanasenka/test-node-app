@@ -1,14 +1,14 @@
-const app = require('express')
+const app = require('express');
 
 const logger = require('../../common/logger')('UsersController');
-const userService = require('../../services/users.service')
-const {authenticateToken} = require('../../middleware/auth')
+const userService = require('../../services/users.service').instance();
+const { authenticateToken } = require('../../middleware/auth');
 
 const userRouter = app.Router();
 
-userRouter.get('/users', async (req, res) => {
+userRouter.get('/', async (req, res) => {
 	try {
-		const data = await getAllUsers();
+		const data = await userService.getAllUsers();
 		res.send(data);
 	} catch (error) {
 		res.status(500).send('Can not get all users');
@@ -16,8 +16,8 @@ userRouter.get('/users', async (req, res) => {
 	}
 });
 
-userRouter.post('/', (req, res) => {
-	addUser(req.body);
+userRouter.post('/', async (req, res) => {
+	await userService.addUser(req.body);
 	res.send('Done!');
 });
 
@@ -25,10 +25,10 @@ userRouter.post('/', (req, res) => {
 userRouter.delete('/user', authenticateToken, async (req, res) => {
 	try {
 		const id = req.user.id;
-		const user = await getUser(null, id);
+		const user = await userService.getUser(null, id);
 		if (!user) return res.status(404).send('User does not exist');
 
-		const deleteResult = await deleteUser(id);
+		const deleteResult = await userService.deleteUser(id);
 		if (!deleteResult) return res.status(500).send('Can not delete user');
 
 		res.send('User has been deleted');
@@ -39,4 +39,4 @@ userRouter.delete('/user', authenticateToken, async (req, res) => {
 });
 
 
-module.exports = userRouter
+module.exports = userRouter;
