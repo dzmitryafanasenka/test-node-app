@@ -1,21 +1,21 @@
 const app = require('express')
 
 const config = require('../../config')
-const logger = require('../../common/logger');
-const PostsService = require('../../services/posts.service')
+const logger = require('../../common/logger')('PostsController');
+const PostsService = require('../../services/posts.service').instance();
 const {authenticateToken}=require('../../middleware/auth')
 
 const postsRouter = app.Router();
 
-postsRouter.get('/posts', authenticateToken, async (req, res) => {
+postsRouter.get('/', authenticateToken, async (req, res) => {
 	try {
 		const id = req.query.id;
 		let data;
 		if (id) {
 			if (+id !== +req.user.id) return res.status(403).send('Forbidden');
-			data = await getUserPosts(id);
+			data = await PostsService.getUserPosts(id);
 		} else {
-			data = await getAllPosts();
+			data = await PostsService.getAllPosts();
 		}
 		res.send(data);
 	} catch (error) {
@@ -24,7 +24,7 @@ postsRouter.get('/posts', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.post('/post', authenticateToken, async (req, res) => {
+postsRouter.post('/', authenticateToken, async (req, res) => {
 	try {
 		const {title, body} = req.body;
 		const {user} = req;
@@ -38,7 +38,7 @@ postsRouter.post('/post', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.put('/post', authenticateToken, async (req, res) => {
+postsRouter.put('/', authenticateToken, async (req, res) => {
 	try {
 		const {title, body} = req.body;
 		const {postId} = req.query;
@@ -58,7 +58,7 @@ postsRouter.put('/post', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.delete('/post', authenticateToken, async (req, res) => {
+postsRouter.delete('/', authenticateToken, async (req, res) => {
 	try {
 		const {postId} = req.query;
 		const {user} = req;

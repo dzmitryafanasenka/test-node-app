@@ -1,10 +1,9 @@
 'use strict';
 
-const Sequelize = require('sequelize');
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		return queryInterface.createTable('users', {
-			id: {
+			userId: {
 				type: Sequelize.INTEGER,
 				autoIncrement: true,
 				primaryKey: true,
@@ -26,6 +25,7 @@ module.exports = {
 				type: Sequelize.BOOLEAN,
 				allowNull: false
 			}
+
 		}, {
 			timestamps: false
 		});
@@ -34,5 +34,4 @@ module.exports = {
 	down: async (queryInterface, Sequelize) => {
 		return queryInterface.dropTable('users');
 	}
-}
-;
+};

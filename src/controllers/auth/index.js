@@ -1,7 +1,11 @@
 const app = require('express')
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const config = require('../../config')
+const logger = require('../../common/logger')('AuthController')
+const usersService = require('../../services/users.service').instance();
 
 const authRouter = app.Router();
 
@@ -12,7 +16,7 @@ authRouter.post('/signup', async (req, res) => {
 			res.status(400).send('All input is required!');
 		}
 
-		const existingUser = await getUser(email);
+		const existingUser = await usersService.getUser(email);
 		if (existingUser) {
 			return res.status(409).send('User Already Exists. Please Login');
 		}
@@ -56,7 +60,7 @@ authRouter.post('/login', async (req, res) => {
 			res.status(400).send('All input is required');
 		}
 
-		const user = await getUser(email);
+		const user = await usersService.getUser(email);
 
 		const userStatus = user && (await bcrypt.compare(password, user.password));
 		if (userStatus) {

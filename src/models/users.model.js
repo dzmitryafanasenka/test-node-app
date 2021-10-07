@@ -1,8 +1,6 @@
-const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, Sequelize) => {
 	return sequelize.define('users', {
-		id: {
+		userId: {
 			type: Sequelize.INTEGER,
 			autoIncrement: true,
 			primaryKey: true,

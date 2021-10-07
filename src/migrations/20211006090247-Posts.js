@@ -1,14 +1,8 @@
 'use strict';
 
-const Sequelize = require('sequelize');
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		return queryInterface.createTable('posts', {
-			id: {
-				type: Sequelize.INTEGER,
-				autoIncrement: false,
-				allowNull: false
-			},
 			postId: {
 				type: Sequelize.INTEGER,
 				autoIncrement: true,
