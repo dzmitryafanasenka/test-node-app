@@ -1,3 +1,5 @@
+const uuid = require('uuid').v4;
+
 const db = require('../models');
 const logger = require('../common/logger')('UsersService');
 
@@ -12,6 +14,7 @@ class UsersService {
 
 	async addUser(data) {
 		const result = await this._users.create({
+			userId: uuid(),
 			email: data.email,
 			password: data.password,
 			activationCode: data.activationCode,
@@ -21,31 +24,25 @@ class UsersService {
 		return result && result.dataValues;
 	}
 
-	async activateUser(id) {
-		const result = await this._users.update(
+	async activateUser(userId) {
+		return await this._users.update(
 			{ activated: true },
-			{ where: { id } }
+			{ where: { userId } }
 		);
-
-		return result;
 	}
 
 	async deleteUser(userId) {
-		const result = await this._users.destroy({
+		return await this._users.destroy({
 			where: { userId }
 		});
-
-		return result;
 	}
 
 	async getAllUsers() {
-		const result = await this._users.findAll({
+		return await this._users.findAll({
 			include: [{
 				model: db.posts
 			}]
 		});
-
-		return result;
 	}
 
 	async getUser(email, userId) {

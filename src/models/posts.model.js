@@ -1,14 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
 	return sequelize.define('posts', {
 		postId: {
-			type: Sequelize.INTEGER,
-			autoIncrement: true,
+			type: Sequelize.STRING,
 			primaryKey: true,
 			allowNull: false
 		},
 		userId: {
-			type: Sequelize.INTEGER,
-			autoIncrement: false,
+			type: Sequelize.STRING,
 			allowNull: false,
 			foreignKey: true
 		},

@@ -8,22 +8,28 @@ const { authenticateToken } = require('../../middleware/auth');
 
 const postsRouter = app.Router();
 
-postsRouter.get('/:userId', authenticateToken, async (req, res) => {
+postsRouter.get('/', authenticateToken, async (req, res) => {
 	try {
-		const { userId } = req.params;
-		let data;
-		if (userId) {
-			if (userId !== req.user.userId) return res.status(403).send('Forbidden');
-			data = await PostsService.getUserPosts(id);
-		} else {
-			data = await PostsService.getAllPosts();
-		}
+		const data = await PostsService.getAllPosts();
 		res.send(data);
 	} catch (error) {
 		res.status(500).send('Can not get all posts');
 		logger.error(error);
 	}
 });
+
+postsRouter.get('/:userId', authenticateToken, async (req, res) => {
+	try {
+		const { userId } = req.params;
+		if (userId !== req.user.userId) return res.status(403).send('Forbidden');
+		const data = await PostsService.getUserPosts(userId);
+		res.send(data);
+	} catch (error) {
+		res.status(500).send('Can not get all posts');
+		logger.error(error);
+	}
+})
+;
 
 postsRouter.post('/', authenticateToken, async (req, res) => {
 	try {

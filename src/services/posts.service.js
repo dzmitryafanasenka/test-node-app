@@ -1,3 +1,5 @@
+const uuid = require('uuid').v4;
+
 const db = require('../models');
 const logger = require('../common/logger')('PostsService');
 
@@ -12,6 +14,7 @@ class PostsService {
 
 	async addPost(data) {
 		const result = await this._posts.create({
+			postId: uuid(),
 			userId: data.userId,
 			body: data.body,
 			title: data.title,
@@ -23,15 +26,11 @@ class PostsService {
 	}
 
 	async getAllPosts() {
-		const result = await this._posts.findAll();
-
-		return result;
+		return await this._posts.findAll();
 	}
 
-	async getUserPosts(id) {
-		const result = await this._posts.findAll({ where: { id } });
-
-		return result;
+	async getUserPosts(userId) {
+		return await this._posts.findAll({ where: { userId } });
 	}
 
 	async getPostById(postId) {
@@ -45,17 +44,14 @@ class PostsService {
 			{ body: data.body, title: data.title },
 			{ where: { postId: data.postId } }
 		);
-		const result = await getPostById(data.postId);
 
-		return result;
+		return await this.getPostById(data.postId);
 	}
 
 	async deletePost(postId) {
-		const result = await this._posts.destroy({
+		return await this._posts.destroy({
 			where: { postId }
 		});
-
-		return result;
 	}
 }
 

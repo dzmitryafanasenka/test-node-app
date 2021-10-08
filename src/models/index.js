@@ -20,10 +20,10 @@ db.users = require('./users.model')(sequelize, Sequelize);
 db.posts = require('./posts.model')(sequelize, Sequelize);
 db.comments = require('./comments.model')(sequelize, Sequelize);
 
-db.users.hasMany(db.posts, { foreignKey: 'userId' });
+db.users.hasMany(db.posts, { foreignKey: 'userId', onDelete: 'cascade' });
 db.posts.belongsTo(db.users, { foreignKey: 'userId', as: 'user' });
 // TODO DELETE POSTS AFTER DELETING THE USER
-db.posts.hasMany(db.comments, { foreignKey: 'postId' });
+db.posts.hasMany(db.comments, { foreignKey: 'postId', onDelete: 'cascade' });
 db.comments.belongsTo(db.comments, { foreignKey: 'postId', as: 'post' });
 
 db.comments.belongsTo(db.users, { foreignKey: 'userId', as: 'user' });

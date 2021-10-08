@@ -1,9 +1,11 @@
 const app = require('express');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const joi = require('joi');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
+const authValidator = require('./validation/index');
 const config = require('../../config');
 const logger = require('../../common/logger')('AuthController');
 const usersService = require('../../services/users.service').instance();
@@ -13,8 +15,11 @@ const authRouter = app.Router();
 authRouter.post('/signup', async (req, res) => {
 	try {
 		const { email, password } = req.body;
-		if (!(email && password)) {
-			res.status(400).send('All input is required!');
+
+		try {
+			joi.assert({ email, password }, authValidator.signUpValidation);
+		} catch (validationError) {
+			return res.status(400).send(validationError.details);
 		}
 
 		const existingUser = await usersService.getUser(email);
@@ -31,22 +36,14 @@ authRouter.post('/signup', async (req, res) => {
 			activated: false
 		});
 
-		const token = jwt.sign(
-			{ userId: user.userId, email },
-			process.env.ACCESS_TOKEN_SECRET,
-			{
-				expiresIn: process.env.TOKEN_EXPIRE_TIME
-			}
-		);
-		user.token = token;
 		try {
-			await sendVerificationMail(user.email, user.id, activationCode);
+			await sendVerificationMail(user.email, user.userId, activationCode);
 		} catch (e) {
 			logger.error('Can not send verification email', e);
 
 			return res.status(400).send('Can not send verification email');
 		}
-		res.status(201).json(user);
+		res.send(user);
 	} catch (error) {
 		res.status(400).send('An error occurred');
 		logger.error(error);
@@ -57,24 +54,24 @@ authRouter.post('/login', async (req, res) => {
 	try {
 		const { email, password } = req.body;
 
-		if (!(email && password)) {
-			res.status(400).send('All input is required');
+		try {
+			joi.assert({ email, password }, authValidator.loginValidation);
+		} catch (loginError) {
+			return res.status(400).send(loginError.details);
 		}
 
 		const user = await usersService.getUser(email);
 
 		const userStatus = user && (await bcrypt.compare(password, user.password));
 		if (userStatus) {
-			const token = jwt.sign(
-				{ id: user.id, email },
+			user.token = jwt.sign(
+				{ userId: user.userId, email },
 				process.env.ACCESS_TOKEN_SECRET,
 				{
 					expiresIn: process.env.TOKEN_EXPIRE_TIME
 				}
 			);
-
-			user.token = token;
-			res.status(200).json(user);
+			res.send(user);
 		} else {
 			res.status(400).send('Invalid Credentials');
 		}
@@ -86,14 +83,19 @@ authRouter.post('/login', async (req, res) => {
 authRouter.get('/verify/:id/:token', async (req, res) => {
 	try {
 		const user = await usersService.getUser(null, req.params.id);
-		if (!user) return res.status(400).send('Invalid link');
 
-		const token = user.activationCode;
-		if (!token) return res.status(400).send('Invalid link');
+		try {
+			joi.assert(user, authValidator.verifyValidation);
+		} catch (verificationError) {
+			logger.error('Validation failed at the verification method', verificationError);
 
-		const updateRequest = await usersService.activateUser(user.id);
+			return res.status(400).send('Invalid link');
+		}
 
-		if (!updateRequest) return res.status(500).send('Can\'t verify user');
+		const updateRequest = await usersService.activateUser(user.userId);
+		if (!updateRequest) {
+			return res.status(500).send('Can\'t verify user');
+		}
 		//res.redirect(`${process.env.CLIENT_URL}/login`)
 		res.send('Email verified successfully');
 	} catch (error) {
@@ -104,6 +106,7 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 
 async function sendVerificationMail(address, id, activationCode) {
 	const verificationUrl = `http://${config.app.host}:${config.app.port}/verify/${id}/${activationCode}`;
+
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		port: 587,

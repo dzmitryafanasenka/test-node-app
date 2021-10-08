@@ -1,17 +1,16 @@
 module.exports = (sequelize, Sequelize) => {
 	return sequelize.define('comments', {
 		commentId: {
-			type: Sequelize.INTEGER,
-			autoIncrement: true,
+			type: Sequelize.STRING,
 			primaryKey: true,
 			allowNull: false
 		},
 		userId: {
-			type: Sequelize.INTEGER,
+			type: Sequelize.STRING,
 			foreignKey: true
 		},
 		postId: {
-			type: Sequelize.INTEGER,
+			type: Sequelize.STRING,
 			foreignKey: true
 		},
 		body: {
