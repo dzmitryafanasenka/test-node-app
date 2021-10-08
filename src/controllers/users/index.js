@@ -22,13 +22,13 @@ userRouter.post('/', async (req, res) => {
 });
 
 
-userRouter.delete('/user', authenticateToken, async (req, res) => {
+userRouter.delete('/', authenticateToken, async (req, res) => {
 	try {
-		const id = req.user.id;
-		const user = await userService.getUser(null, id);
+		const userId = req.user.userId;
+		const user = await userService.getUser(null, userId);
 		if (!user) return res.status(404).send('User does not exist');
 
-		const deleteResult = await userService.deleteUser(id);
+		const deleteResult = await userService.deleteUser(userId);
 		if (!deleteResult) return res.status(500).send('Can not delete user');
 
 		res.send('User has been deleted');

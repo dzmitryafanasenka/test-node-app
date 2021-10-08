@@ -32,7 +32,7 @@ authRouter.post('/signup', async (req, res) => {
 		});
 
 		const token = jwt.sign(
-			{ id: user.id, email },
+			{ userId: user.userId, email },
 			process.env.ACCESS_TOKEN_SECRET,
 			{
 				expiresIn: process.env.TOKEN_EXPIRE_TIME
@@ -104,13 +104,12 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 
 async function sendVerificationMail(address, id, activationCode) {
 	const verificationUrl = `http://${config.app.host}:${config.app.port}/verify/${id}/${activationCode}`;
-	console.log(config.mail.user, config.mail.password);
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		port: 587,
 		secure: true,
 		auth: {
-			user: config.mail.user,
+			user: config.mail.username,
 			pass: config.mail.password
 		}
 	});

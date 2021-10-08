@@ -12,7 +12,7 @@ class PostsService {
 
 	async addPost(data) {
 		const result = await this._posts.create({
-			id: data.id,
+			userId: data.userId,
 			body: data.body,
 			title: data.title,
 			likes: 0,

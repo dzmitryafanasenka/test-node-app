@@ -22,7 +22,7 @@ db.comments = require('./comments.model')(sequelize, Sequelize);
 
 db.users.hasMany(db.posts, { foreignKey: 'userId' });
 db.posts.belongsTo(db.users, { foreignKey: 'userId', as: 'user' });
-
+// TODO DELETE POSTS AFTER DELETING THE USER
 db.posts.hasMany(db.comments, { foreignKey: 'postId' });
 db.comments.belongsTo(db.comments, { foreignKey: 'postId', as: 'post' });
 

@@ -30,9 +30,9 @@ class UsersService {
 		return result;
 	}
 
-	async deleteUser(id) {
+	async deleteUser(userId) {
 		const result = await this._users.destroy({
-			where: { id }
+			where: { userId }
 		});
 
 		return result;
@@ -48,12 +48,12 @@ class UsersService {
 		return result;
 	}
 
-	async getUser(email, id) {
+	async getUser(email, userId) {
 		let result;
 		if (email) {
 			result = await this._users.findOne({ where: { email } });
-		} else if (id) {
-			result = await this._users.findOne({ where: { id } });
+		} else if (userId) {
+			result = await this._users.findOne({ where: { userId } });
 		}
 
 		return result && result.dataValues;
