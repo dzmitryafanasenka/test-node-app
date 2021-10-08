@@ -4,6 +4,7 @@ const logger = require('../../common/logger')('UsersController');
 const userService = require('../../services/users.service').instance();
 const { authenticateToken } = require('../../middleware/auth');
 
+
 const userRouter = app.Router();
 
 userRouter.get('/', async (req, res) => {
@@ -15,12 +16,6 @@ userRouter.get('/', async (req, res) => {
 		logger.error('While getting all users', error);
 	}
 });
-
-userRouter.post('/', async (req, res) => {
-	await userService.addUser(req.body);
-	res.send('Done!');
-});
-
 
 userRouter.delete('/', authenticateToken, async (req, res) => {
 	try {

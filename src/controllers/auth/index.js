@@ -10,6 +10,7 @@ const config = require('../../config');
 const logger = require('../../common/logger')('AuthController');
 const usersService = require('../../services/users.service').instance();
 
+
 const authRouter = app.Router();
 
 authRouter.post('/signup', async (req, res) => {
