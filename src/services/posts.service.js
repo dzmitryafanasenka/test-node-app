@@ -1,57 +1,70 @@
-const uuid = require('uuid').v4;
-
-const db = require('../models');
 const logger = require('../common/logger')('PostsService');
+const PostsRepository = require('../repositories/posts.repository').instance();
 
 class PostsService {
-	constructor() {
-		this._posts = db.posts;
-	}
-
 	static instance() {
 		return postsService;
 	}
 
-	async addPost(data) {
-		const result = await this._posts.create({
-			postId: uuid(),
-			userId: data.userId,
-			body: data.body,
-			title: data.title,
-			likes: 0,
-			dislikes: 0
-		});
-
-		return result && result.dataValues;
+	async getAllPosts(res) {
+		const data = await PostsRepository.getAllPosts();
+		res.send(data);
 	}
 
-	async getAllPosts() {
-		return await this._posts.findAll();
+	async createPost(res, newPostData) {
+		const createdPost = await PostsRepository.addPost(newPostData);
+		if (!createdPost) {
+			return res.status(500).send('Can not create the post');
+		}
+
+		res.send(createdPost);
 	}
 
-	async getUserPosts(userId) {
-		return await this._posts.findAll({ where: { userId } });
+	async getUserPosts(res, userId) {
+		const data = await PostsRepository.getUserPosts(userId);
+		if (!data) {
+			return res.status(404).send('Can not get posts');
+		}
+
+		res.send(data);
 	}
 
-	async getPostById(postId) {
-		const result = await this._posts.findOne({ where: { postId } });
+	async updatePost(res, newPostData, user) {
+		const post = await PostsRepository.getPostById(newPostData.postId);
 
-		return result;
+		if (!post) {
+			return res.status(404).send('Post does not exist');
+		}
+
+		if (post.userId !== user.userId) {
+			return res.status(403).send('Forbidden');
+		}
+
+		const updatedPost = await PostsRepository.updatePost(newPostData);
+		if (!updatedPost) {
+			return res.status(500).send('Can not update the post');
+		}
+
+		res.send(updatedPost);
 	}
 
-	async updatePost(data) {
-		await this._posts.update(
-			{ body: data.body, title: data.title },
-			{ where: { postId: data.postId } }
-		);
+	async deletePost(res, postId, user) {
+		const post = await PostsRepository.getPostById(postId);
 
-		return await this.getPostById(data.postId);
-	}
+		if (!post) {
+			return res.status(404).send('Post does not exist');
+		}
 
-	async deletePost(postId) {
-		return await this._posts.destroy({
-			where: { postId }
-		});
+		if (post.userId !== user.userId) {
+			return res.status(403).send('Forbidden');
+		}
+
+		const data = await PostsRepository.deletePost(postId);
+		if (!data) {
+			return res.status(500).send('Can not delete the post');
+		}
+
+		res.send(post);
 	}
 }
 

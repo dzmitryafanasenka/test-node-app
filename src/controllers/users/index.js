@@ -1,32 +1,45 @@
 const app = require('express');
+const joi = require('joi');
 
 const logger = require('../../common/logger')('UsersController');
 const userService = require('../../services/users.service').instance();
+const userValidator = require('./validation/index');
 const { authenticateToken } = require('../../middleware/auth');
-
 
 const userRouter = app.Router();
 
-userRouter.get('/', async (req, res) => {
+userRouter.get('/current', authenticateToken, async (req, res) => {
 	try {
-		const data = await userService.getAllUsers();
-		res.send(data);
+		await userService.getUser(res, req.user.userId);
 	} catch (error) {
-		res.status(500).send('Can not get all users');
-		logger.error('While getting all users', error);
+		res.status(500).send('Unknown error');
+		logger.error('While getting the user', error);
+	}
+});
+
+userRouter.patch('/current', authenticateToken, async (req, res) => {
+	try {
+		const { nickname, phone } = req.body;
+		const { userId } = req.user;
+
+		const dataToUpdate = { nickname, phone, userId };
+
+		try {
+			joi.assert(dataToUpdate, userValidator.updateUserValidation);
+		} catch (validationError) {
+			return res.status(400).send('Invalid data');
+		}
+
+		await userService.updateUser(res, dataToUpdate);
+	} catch (error) {
+		res.status(500).send('Unknown error');
+		logger.error('While getting the user', error);
 	}
 });
 
 userRouter.delete('/', authenticateToken, async (req, res) => {
 	try {
-		const userId = req.user.userId;
-		const user = await userService.getUser(null, userId);
-		if (!user) return res.status(404).send('User does not exist');
-
-		const deleteResult = await userService.deleteUser(userId);
-		if (!deleteResult) return res.status(500).send('Can not delete user');
-
-		res.send('User has been deleted');
+		await userService.deleteUser(res, req.user.userId);
 	} catch (error) {
 		res.status(400).send('An error occurred');
 		logger.error(error);

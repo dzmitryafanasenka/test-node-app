@@ -1,59 +1,51 @@
-const uuid = require('uuid').v4;
-
-const db = require('../models');
 const logger = require('../common/logger')('UsersService');
+const UsersRepository = require('../repositories/users.repository').instance();
 
 class UsersService {
-	constructor() {
-		this._users = db.users;
-	}
-
 	static instance() {
 		return userService;
 	}
 
-	async addUser(data) {
-		const result = await this._users.create({
-			userId: uuid(),
-			email: data.email,
-			password: data.password,
-			activationCode: data.activationCode,
-			activated: data.activated
-		});
-
-		return result && result.dataValues;
-	}
-
-	async activateUser(userId) {
-		return await this._users.update(
-			{ activated: true },
-			{ where: { userId } }
-		);
-	}
-
-	async deleteUser(userId) {
-		return await this._users.destroy({
-			where: { userId }
-		});
-	}
-
-	async getAllUsers() {
-		return await this._users.findAll({
-			include: [{
-				model: db.posts
-			}]
-		});
-	}
-
-	async getUser(email, userId) {
-		let result;
-		if (email) {
-			result = await this._users.findOne({ where: { email } });
-		} else if (userId) {
-			result = await this._users.findOne({ where: { userId } });
+	async updateUser(res, dataToUpdate) {
+		const updatedUser = await UsersRepository.updateUser(dataToUpdate);
+		if (!updatedUser) {
+			return res.status(500).send('Unknown error');
 		}
 
-		return result && result.dataValues;
+		res.send(updatedUser);
+	}
+
+	async deleteUser(res, userId) {
+		const user = await UsersRepository.getUser(null, userId);
+
+		if (!user) {
+			return res.status(404).send('User does not exist');
+		}
+
+		const deleteResult = await UsersRepository.deleteUser(userId);
+		if (!deleteResult) {
+			return res.status(500).send('Can not delete user');
+		}
+
+		res.send('User has been deleted');
+	}
+
+	async getUser(res, userId) {
+		const user = await UsersRepository.getUser(null, userId);
+
+		if (!user) {
+			return res.status(404).send('User does not exist');
+		}
+
+		const publicUserData = {
+			userId: user.userId,
+			email: user.email,
+			nickname: user.nickname,
+			phone: user.phone,
+			posts: user.posts
+		};
+
+		res.send(publicUserData);
 	}
 }
 

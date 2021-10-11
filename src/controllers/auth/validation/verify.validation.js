@@ -9,9 +9,6 @@ const verifyUserSchema = Joi.object({
 		.min(3)
 		.email(),
 
-	password: Joi.string()
-		.min(4),
-
 	activationCode: Joi.string()
 		.required(),
 

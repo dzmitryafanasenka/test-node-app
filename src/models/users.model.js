@@ -13,6 +13,14 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: false
 		},
+		nickname: {
+			type: Sequelize.STRING,
+			allowNull: true
+		},
+		phone: {
+			type: Sequelize.STRING,
+			allowNull: true
+		},
 		activationCode: {
 			type: Sequelize.STRING,
 			allowNull: false

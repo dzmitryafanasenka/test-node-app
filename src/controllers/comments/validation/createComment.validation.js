@@ -1,20 +1,19 @@
 const Joi = require('joi');
 
-const updatePostSchema = Joi.object({
+const createCommentSchema = Joi.object({
 	postId: Joi.string()
 		.min(3)
 		.max(40)
 		.required(),
 
-	title: Joi.string()
+	userId: Joi.string()
 		.min(3)
 		.max(40)
 		.required(),
 
 	body: Joi.string()
-		.min(10)
-		.max(200)
+		.max(100)
 		.required()
 });
 
-module.exports = updatePostSchema;
+module.exports = createCommentSchema;
