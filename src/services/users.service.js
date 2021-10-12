@@ -12,7 +12,15 @@ class UsersService {
 			return res.status(500).send('Unknown error');
 		}
 
-		res.send(updatedUser);
+		const publicUserData = {
+			userId: updatedUser.userId,
+			email: updatedUser.email,
+			nickname: updatedUser.nickname,
+			phone: updatedUser.phone,
+			posts: updatedUser.posts
+		};
+
+		res.send(publicUserData);
 	}
 
 	async deleteUser(res, userId) {
@@ -27,7 +35,15 @@ class UsersService {
 			return res.status(500).send('Can not delete user');
 		}
 
-		res.send('User has been deleted');
+		const publicUserData = {
+			userId: user.userId,
+			email: user.email,
+			nickname: user.nickname,
+			phone: user.phone,
+			posts: user.posts
+		};
+
+		res.send(publicUserData);
 	}
 
 	async getUser(res, userId) {

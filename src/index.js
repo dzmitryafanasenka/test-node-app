@@ -1,11 +1,15 @@
 const express = require('express');
 const joi = require('joi');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 require('dotenv').config();
 
 const config = require('./config');
 const configValidator = require('./config/config.validation');
 const logger = require('./common/logger')('app');
+const swaggerDocument = YAML.load('./public/swagger.yaml');
 const { sequelize } = require('./models/index');
+
 
 const authController = require('./controllers/auth');
 const commentsController = require('./controllers/comments');
@@ -20,6 +24,11 @@ class App {
 
 		this.express = new express();
 		this.express.use(express.json());
+		this.express.use(
+			'/api-docs',
+			swaggerUi.serve,
+			swaggerUi.setup(swaggerDocument)
+		);
 
 		this.express.use('/users', usersController);
 		this.express.use('/', authController);

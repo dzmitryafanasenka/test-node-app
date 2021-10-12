@@ -30,6 +30,14 @@ class AuthService {
 			activated: false
 		});
 
+		const publicUserData = {
+			userId: user.userId,
+			email: user.email,
+			nickname: user.nickname,
+			phone: user.phone,
+			posts: user.posts
+		};
+
 		try {
 			await this.sendVerificationMail(user.email, user.userId, activationCode);
 		} catch (e) {
@@ -37,23 +45,30 @@ class AuthService {
 
 			return res.status(400).send('Can not send verification email');
 		}
-		res.send(user);
+		res.send(publicUserData);
 	}
 
 	async login(res, data) {
 		const { email, password } = data;
 		const user = await UsersRepository.getUser(email);
 
+		const publicUserData = {
+			userId: user.userId,
+			email: user.email,
+			nickname: user.nickname,
+			phone: user.phone
+		};
+
 		const userStatus = user && (await bcrypt.compare(password, user.password));
 		if (userStatus) {
-			user.token = jwt.sign(
+			publicUserData.token = jwt.sign(
 				{ userId: user.userId, email },
 				process.env.ACCESS_TOKEN_SECRET,
 				{
 					expiresIn: process.env.TOKEN_EXPIRE_TIME
 				}
 			);
-			res.send(user);
+			res.send(publicUserData);
 		} else {
 			res.status(400).send('Invalid Credentials');
 		}

@@ -63,14 +63,16 @@ class UsersRepository {
 			result = await this._users.findOne({
 				where: { email },
 				include: [{
-					model: db.posts
+					model: db.posts,
+					include: [{ model: db.comments }]
 				}]
 			});
 		} else if (userId) {
 			result = await this._users.findOne({
 				where: { userId },
 				include: [{
-					model: db.posts
+					model: db.posts,
+					include: [{ model: db.comments }]
 				}]
 			});
 		}

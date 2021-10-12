@@ -24,7 +24,7 @@ authRouter.post('/signup', async (req, res) => {
 
 		await AuthService.signup(res, { email, password });
 	} catch (error) {
-		res.status(400).send('An error occurred');
+		res.status(500).send('An error occurred');
 		logger.error(error);
 	}
 });
@@ -41,6 +41,7 @@ authRouter.post('/login', async (req, res) => {
 
 		await AuthService.login(res, { email, password });
 	} catch (error) {
+		res.status(500).send('An error occurred');
 		logger.error(error);
 	}
 });
@@ -66,7 +67,7 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 
 		await AuthService.verifyUser(res, user);
 	} catch (error) {
-		res.status(400).send('An error occurred');
+		res.status(500).send('An error occurred');
 		logger.error(error);
 	}
 });

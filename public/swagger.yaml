@@ -1,0 +1,580 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Node js test project
+paths:
+  /users/current:
+    get:
+      tags:
+        - Users
+      summary: get all data about current user
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Users"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "500":
+          description: Unknown error at the server part
+
+    patch:
+      tags:
+        - Users
+      summary: update user data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUser"
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Users"
+        "400":
+          description: Data is not valid
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "500":
+          description: Unknown error at the server part
+
+    delete:
+      tags:
+        - Users
+      summary: delete current user
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: A token is required for authentication
+        "404":
+          description: User does not exist
+        "500":
+          description: Unknown error at the server part
+
+  /posts:
+    get:
+      tags:
+        - Posts
+      summary: get all posts in the system
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Posts"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "500":
+          description: Unknown error at the server part
+
+    post:
+      tags:
+        - Posts
+      summary: create a new post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePost"
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/CreatedPost"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "500":
+          description: Unknown error at the server part
+
+  /posts/{postId}:
+    put:
+      tags:
+        - Posts
+      summary: update selected post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePost"
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: string
+          required: true
+          description: ID of the post to update
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "404":
+          description: Post does not exist
+        "500":
+          description: Unknown error at the server part
+
+    delete:
+      tags:
+        - Posts
+      summary: delete selected post
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: string
+          required: true
+          description: ID of the post to delete
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "404":
+          description: Post does not exist
+        "500":
+          description: Unknown error at the server part
+
+  /posts/current:
+    get:
+      tags:
+        - Posts
+      summary: get all posts created by the current user
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Posts"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "404":
+          description: Post does not exist
+        "500":
+          description: Unknown error at the server part
+
+  /posts/{postId}/comments:
+    post:
+      tags:
+        - Comments
+      summary: Add a comment to selected post
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: string
+          required: true
+          description: ID of the post to comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddComment"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "400":
+          description: Invalid Credentials
+        "500":
+          description: Unknown error at the server part
+
+  /posts/{postId}/comments/{commentId}:
+    put:
+      tags:
+        - Comments
+      summary: Update comment
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: string
+          required: true
+          description: ID of the post
+        - in: path
+          name: commentId
+          schema:
+            type: string
+          required: true
+          description: ID of the comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateComment"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "400":
+          description: Invalid Credentials
+        "500":
+          description: Unknown error at the server part
+
+    delete:
+      tags:
+        - Comments
+      summary: Delete comment
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: string
+          required: true
+          description: ID of the post
+        - in: path
+          name: commentId
+          schema:
+            type: string
+          required: true
+          description: ID of the comment
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Comment"
+        "400":
+          description: Invalid Credentials
+        "500":
+          description: Unknown error at the server part
+
+  /signup:
+    post:
+      tags:
+        - Auth
+      summary: Signup on the site
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUp"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/RegisteredUser"
+        "409":
+          description: User already exists. Please Login
+        "400":
+          description: User is registered, but verification email was not sent because of an error
+        "500":
+          description: Unknown error at the server part
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Login on the site
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/LoginedUser"
+        "400":
+          description: Invalid Credentials
+        "500":
+          description: Unknown error at the server part
+
+tags:
+  - name: Users
+    description: API for users in the system
+  - name: Auth
+    description: API for authentication
+  - name: Posts
+    description: API for posts
+  - name: Comments
+    description: API for post comments
+components:
+  schemas:
+    RegisteredUser:
+      type: object
+      required:
+        - userId
+        - email
+        - nickname
+        - phone
+      properties:
+        userId:
+          type: string
+          uniqueItems: true
+        email:
+          type: string
+        nickname:
+          nullable: true
+          type: string
+        phone:
+          nullable: true
+          type: string
+
+    LoginedUser:
+      allOf:
+        - $ref: "#/components/schemas/RegisteredUser"
+        - type: object
+          required:
+            - token
+          properties:
+            token:
+              type:
+                string
+    User:
+      allOf:
+        - $ref: "#/components/schemas/RegisteredUser"
+        - type: object
+          required:
+            - posts
+          properties:
+            posts:
+              $ref: "#/components/schemas/Posts"
+
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+
+    CreatedPost:
+      type: object
+      required:
+        - postId
+        - userId
+        - title
+        - body
+        - likes
+        - dislikes
+      properties:
+        postId:
+          type: string
+          uniqueItems: true
+        userId:
+          type: string
+          uniqueItems: true
+        title:
+          type: string
+        body:
+          type: string
+        likes:
+          type: integer
+        dislikes:
+          type: integer
+
+    Post:
+      allOf:
+        - $ref: "#/components/schemas/CreatedPost"
+        - type: object
+          required:
+            - comments
+          properties:
+            comments:
+              $ref: "#/components/schemas/Comments"
+
+    Posts:
+      type: array
+      items:
+        $ref: "#/components/schemas/Post"
+
+    Comment:
+      type: object
+      required:
+        - commentId
+        - userId
+        - postId
+        - body
+      properties:
+        commentId:
+          type: string
+          uniqueItems: true
+        userId:
+          type: string
+          uniqueItems: true
+        postId:
+          type: string
+          uniqueItems: true
+        body:
+          type: string
+
+    Comments:
+      type: array
+      items:
+        $ref: "#/components/schemas/Comment"
+
+    SignUp:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    Login:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UpdateUser:
+      type: object
+      required:
+        - nickname
+        - phone
+      properties:
+        nickname:
+          type: string
+        phone:
+          type: string
+
+    CreatePost:
+      type: object
+      required:
+        - title
+        - body
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+
+    UpdatePost:
+      type: object
+      required:
+        - title
+        - body
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+
+    AddComment:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string
+
+    UpdateComment:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string

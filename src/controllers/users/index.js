@@ -37,11 +37,11 @@ userRouter.patch('/current', authenticateToken, async (req, res) => {
 	}
 });
 
-userRouter.delete('/', authenticateToken, async (req, res) => {
+userRouter.delete('/current', authenticateToken, async (req, res) => {
 	try {
 		await userService.deleteUser(res, req.user.userId);
 	} catch (error) {
-		res.status(400).send('An error occurred');
+		res.status(500).send('An error occurred');
 		logger.error(error);
 	}
 });
