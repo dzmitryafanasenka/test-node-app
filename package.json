@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "docker-compose start",
     "lint": "eslint --fix --config=.eslintrc './src/**/*.js'",
-    "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down",
-    "db:start": "docker-compose start",
-    "db:stop": "docker-compose stop",
+    "stop": "docker-compose stop",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down",
     "db:migrate": "npx sequelize db:migrate",
     "db:migrate:undo": "npx sequelize db:migrate:undo:all",
     "db:restore": "npx sequelize db:migrate:undo:all && npx sequelize db:migrate"
