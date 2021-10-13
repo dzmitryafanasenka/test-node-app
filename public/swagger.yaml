@@ -7,7 +7,7 @@ paths:
     get:
       tags:
         - Users
-      summary: get all data about current user
+      summary: Get all data about current user
       parameters:
         - in: header
           name: x-access-token
@@ -33,7 +33,7 @@ paths:
     patch:
       tags:
         - Users
-      summary: update user data
+      summary: Update user data
       requestBody:
         content:
           application/json:
@@ -64,7 +64,7 @@ paths:
     delete:
       tags:
         - Users
-      summary: delete current user
+      summary: Delete current user
       parameters:
         - in: header
           name: x-access-token
@@ -91,7 +91,7 @@ paths:
     get:
       tags:
         - Posts
-      summary: get all posts in the system
+      summary: Get all posts in the system
       parameters:
         - in: header
           name: x-access-token
@@ -115,7 +115,7 @@ paths:
     post:
       tags:
         - Posts
-      summary: create a new post
+      summary: Create a new post
       requestBody:
         content:
           application/json:
@@ -147,7 +147,7 @@ paths:
     put:
       tags:
         - Posts
-      summary: update selected post
+      summary: Update selected post
       requestBody:
         content:
           application/json:
@@ -186,7 +186,7 @@ paths:
     delete:
       tags:
         - Posts
-      summary: delete selected post
+      summary: Delete selected post
       parameters:
         - in: header
           name: x-access-token
@@ -219,7 +219,7 @@ paths:
     get:
       tags:
         - Posts
-      summary: get all posts created by the current user
+      summary: Get all posts created by the current user
       parameters:
         - in: header
           name: x-access-token

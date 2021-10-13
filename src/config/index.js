@@ -7,7 +7,10 @@ const configuration = {
 	},
 	app: {
 		host: process.env.APP_HOST || 'localhost',
-		port: process.env.APP_PORT || 8080
+		port: process.env.APP_PORT || 8080,
+		client: {
+			url: process.env.CLIENT_URL
+		}
 	},
 	mail: {
 		username: process.env.EMAIL_USER,

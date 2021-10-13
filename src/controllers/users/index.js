@@ -10,10 +10,15 @@ const userRouter = app.Router();
 
 userRouter.get('/current', authenticateToken, async (req, res) => {
 	try {
-		await userService.getUser(res, req.user.userId);
+		const response = await userService.getUser(req.user.userId);
+		res.send (response);
 	} catch (error) {
-		res.status(500).send('Unknown error');
-		logger.error('While getting the user', error);
+		if (error.status && error.message){
+			res.status(error.status).send(error.message);
+		} else {
+			res.status(500).send('Unknown error');
+			logger.error('While getting the user', error);
+		}
 	}
 });
 
@@ -30,7 +35,13 @@ userRouter.patch('/current', authenticateToken, async (req, res) => {
 			return res.status(400).send('Invalid data');
 		}
 
-		await userService.updateUser(res, dataToUpdate);
+		try {
+			const response = await userService.updateUser(dataToUpdate);
+			res.send(response);
+		} catch (serviceError) {
+			return res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error('While getting the user', error);
@@ -39,10 +50,15 @@ userRouter.patch('/current', authenticateToken, async (req, res) => {
 
 userRouter.delete('/current', authenticateToken, async (req, res) => {
 	try {
-		await userService.deleteUser(res, req.user.userId);
+		const response = await userService.deleteUser(req.user.userId);
+		res.send(response);
 	} catch (error) {
-		res.status(500).send('An error occurred');
-		logger.error(error);
+		if (error.status && error.message){
+			res.status(error.status).send(error.message);
+		} else {
+			res.status(500).send('Unknown error');
+			logger.error('While deleting the user', error);
+		}
 	}
 });
 

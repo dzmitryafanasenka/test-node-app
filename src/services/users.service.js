@@ -1,4 +1,5 @@
 const logger = require('../common/logger')('UsersService');
+const ServiceError = require('../common/errors/ServiceError');
 const UsersRepository = require('../repositories/users.repository').instance();
 
 class UsersService {
@@ -6,10 +7,10 @@ class UsersService {
 		return userService;
 	}
 
-	async updateUser(res, dataToUpdate) {
+	async updateUser(dataToUpdate) {
 		const updatedUser = await UsersRepository.updateUser(dataToUpdate);
 		if (!updatedUser) {
-			return res.status(500).send('Unknown error');
+			throw new ServiceError(500, 'Unknown error');
 		}
 
 		const publicUserData = {
@@ -20,19 +21,19 @@ class UsersService {
 			posts: updatedUser.posts
 		};
 
-		res.send(publicUserData);
+		return publicUserData;
 	}
 
-	async deleteUser(res, userId) {
+	async deleteUser(userId) {
 		const user = await UsersRepository.getUser(null, userId);
 
 		if (!user) {
-			return res.status(404).send('User does not exist');
+			throw new ServiceError(404, 'User does not exist');
 		}
 
 		const deleteResult = await UsersRepository.deleteUser(userId);
 		if (!deleteResult) {
-			return res.status(500).send('Can not delete user');
+			throw new ServiceError(500, 'Can not delete user');
 		}
 
 		const publicUserData = {
@@ -43,14 +44,14 @@ class UsersService {
 			posts: user.posts
 		};
 
-		res.send(publicUserData);
+		return publicUserData;
 	}
 
-	async getUser(res, userId) {
+	async getUser(userId) {
 		const user = await UsersRepository.getUser(null, userId);
 
 		if (!user) {
-			return res.status(404).send('User does not exist');
+			throw new ServiceError(404, 'User does not exist');
 		}
 
 		const publicUserData = {
@@ -61,7 +62,7 @@ class UsersService {
 			posts: user.posts
 		};
 
-		res.send(publicUserData);
+		return publicUserData;
 	}
 }
 

@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const config = require('../config/index');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')('AuthService');
+const ServiceError = require('../common/errors/ServiceError');
 const UsersRepository = require('../repositories/users.repository').instance();
 
 class AuthService {
@@ -13,12 +14,12 @@ class AuthService {
 		return authService;
 	}
 
-	async signup(res, data) {
+	async signup(data) {
 		const { email, password } = data;
 
 		const existingUser = await UsersRepository.getUser(email);
 		if (existingUser) {
-			return res.status(409).send('User Already Exists. Please Login');
+			throw new ServiceError(409, 'User Already Exists. Please Login');
 		}
 
 		const encryptedPassword = await bcrypt.hash(password, 10);
@@ -42,13 +43,13 @@ class AuthService {
 			await this.sendVerificationMail(user.email, user.userId, activationCode);
 		} catch (e) {
 			logger.error('Can not send verification email', e);
-
-			return res.status(417).send('Can not send verification email');
+			throw new ServiceError(417, 'Can not send verification email');
 		}
-		res.send(publicUserData);
+
+		return publicUserData;
 	}
 
-	async login(res, data) {
+	async login(data) {
 		const { email, password } = data;
 		const user = await UsersRepository.getUser(email);
 
@@ -62,27 +63,27 @@ class AuthService {
 		const userStatus = user && (await bcrypt.compare(password, user.password));
 		if (userStatus) {
 			publicUserData.token = jwt.sign(
-				{ userId: user.userId, email },
+				{ userId: user.userId },
 				process.env.ACCESS_TOKEN_SECRET,
 				{
 					expiresIn: process.env.TOKEN_EXPIRE_TIME
 				}
 			);
-			res.send(publicUserData);
+
+			return publicUserData;
 		} else {
-			res.status(401).send('Invalid Credentials');
+			throw new ServiceError(401, 'Invalid Credentials');
 		}
 	}
 
-	async verifyUser(res, user){
+	async verifyUser(user){
 		const updateRequest = await UsersRepository.activateUser(user.userId);
 
 		if (!updateRequest) {
-			return res.status(500).send('Can\'t verify user');
+			throw new ServiceError(500, 'Can\'t verify user');
 		}
 
-		//res.redirect(`${process.env.CLIENT_URL}/login`)
-		res.send('Email verified successfully');
+		return 'Email has been verified';
 	}
 
 	async sendVerificationMail(address, id, activationCode) {

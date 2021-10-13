@@ -10,7 +10,8 @@ const postsRouter = app.Router();
 
 postsRouter.get('/', authenticateToken, async (req, res) => {
 	try {
-		await PostsService.getAllPosts(res);
+		const posts = await PostsService.getAllPosts();
+		res.send(posts);
 	} catch (error) {
 		res.status(500).send('Can not get all posts');
 		logger.error(error);
@@ -23,11 +24,17 @@ postsRouter.get('/current', authenticateToken, async (req, res) => {
 
 		try {
 			joi.assert({ userId }, postsValidator.getPostValidation);
-		} catch (validationError){
+		} catch (validationError) {
 			return res.status(400).send('Data is not valid');
 		}
 
-		await PostsService.getUserPosts(res, userId);
+		try {
+			const response = await PostsService.getUserPosts(userId);
+			res.send(response);
+		} catch (serviceError) {
+			res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
 		res.status(500).send('Can not get all posts');
 		logger.error(error);
@@ -51,7 +58,13 @@ postsRouter.post('/', authenticateToken, async (req, res) => {
 			return res.status(400).send('Data is not valid');
 		}
 
-		await PostsService.createPost(res, newPostData);
+		try {
+			const response = await PostsService.createPost(newPostData);
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);
@@ -76,7 +89,12 @@ postsRouter.put('/:postId', authenticateToken, async (req, res) => {
 			return res.status(400).send('Data is not valid');
 		}
 
-		await PostsService.updatePost(res, newPostData, user);
+		try {
+			const response = await PostsService.updatePost(newPostData, user);
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);
@@ -88,7 +106,12 @@ postsRouter.delete('/:postId', authenticateToken, async (req, res) => {
 		const { postId } = req.params;
 		const { user } = req;
 
-		await PostsService.deletePost(res, postId, user);
+		try {
+			const response = await PostsService.deletePost(postId, user);
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);

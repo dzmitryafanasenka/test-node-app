@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "docker-compose start",
+    "dev": "docker build . -t igorlyatskiy/test-node-app && docker-compose up",
     "lint": "eslint --fix --config=.eslintrc './src/**/*.js'",
     "stop": "docker-compose stop",
     "up": "docker-compose up -d",
@@ -18,8 +19,7 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-plugin-sort-requires": "^2.1.0",
-    "nodemon": "^2.0.13",
-    "sequelize-cli": "^6.2.0"
+    "nodemon": "^2.0.13"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -33,6 +33,7 @@
     "npm": "^7.24.1",
     "pg": "^8.7.1",
     "sequelize": "^6.6.5",
+    "sequelize-cli": "^5.4.0",
     "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.2",
     "yamljs": "^0.3.0"

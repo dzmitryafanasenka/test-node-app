@@ -1,70 +1,71 @@
 const logger = require('../common/logger')('PostsService');
 const PostsRepository = require('../repositories/posts.repository').instance();
+const ServiceError = require('../common/errors/ServiceError');
+
 
 class PostsService {
 	static instance() {
 		return postsService;
 	}
 
-	async getAllPosts(res) {
-		const data = await PostsRepository.getAllPosts();
-		res.send(data);
+	async getAllPosts() {
+		return await PostsRepository.getAllPosts();
 	}
 
-	async createPost(res, newPostData) {
+	async createPost(newPostData) {
 		const createdPost = await PostsRepository.addPost(newPostData);
 		if (!createdPost) {
-			return res.status(500).send('Can not create the post');
+			throw new ServiceError(500, 'Can not create the post');
 		}
 
-		res.send(createdPost);
+		return createdPost;
 	}
 
-	async getUserPosts(res, userId) {
+	async getUserPosts(userId) {
 		const data = await PostsRepository.getUserPosts(userId);
 		if (!data) {
-			return res.status(404).send('Can not get posts');
+			throw new ServiceError(404, 'Can not get posts');
 		}
 
-		res.send(data);
+		return data;
 	}
 
-	async updatePost(res, newPostData, user) {
+	async updatePost(newPostData, user) {
 		const post = await PostsRepository.getPostById(newPostData.postId);
 
 		if (!post) {
-			return res.status(404).send('Post does not exist');
+			throw new ServiceError(404, 'Post does not exist');
 		}
 
 		if (post.userId !== user.userId) {
-			return res.status(403).send('Forbidden');
+			throw new ServiceError(403, 'Forbidden');
 		}
 
 		const updatedPost = await PostsRepository.updatePost(newPostData);
 		if (!updatedPost) {
-			return res.status(500).send('Can not update the post');
+			throw new ServiceError(500, 'Cann not update the post');
 		}
 
-		res.send(updatedPost);
+		return updatedPost;
 	}
 
-	async deletePost(res, postId, user) {
+	async deletePost(postId, user) {
 		const post = await PostsRepository.getPostById(postId);
 
 		if (!post) {
-			return res.status(404).send('Post does not exist');
+			throw new ServiceError(404, 'Post does not exist');
 		}
 
 		if (post.userId !== user.userId) {
-			return res.status(403).send('Forbidden');
+			throw new ServiceError(403, 'Forbidden');
 		}
 
 		const data = await PostsRepository.deletePost(postId);
 		if (!data) {
-			return res.status(500).send('Can not delete the post');
+			throw new ServiceError(500, 'Can not delete the post');
 		}
 
-		res.send(post);
+		return post;
 	}
 }
 

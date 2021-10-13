@@ -1,56 +1,57 @@
 const CommentsRepository = require('../repositories/comments.repository').instance();
 const logger = require('../common/logger')('CommentsService');
+const ServiceError = require('../common/errors/ServiceError');
 
 class CommentsService {
 	static instance() {
 		return commentsService;
 	}
 
-	async createComment(res, dataToCreate) {
+	async createComment(dataToCreate) {
 		const comment = await CommentsRepository.createComment(dataToCreate);
 		if (!comment) {
-			return res.status(500).send('Unable to create the comment');
+			throw new ServiceError(500, 'Unable to create the comment');
 		}
 
-		res.send(comment);
+		return comment;
 	}
 
-	async updateComment(res, data) {
+	async updateComment(data) {
 		const { commentId, dataToUpdate, userId } = data;
 
 		const comment = await CommentsRepository.getComment(commentId);
 		if(!comment){
-			res.status(404).send('Comment does not exist');
+			throw new ServiceError(404, 'Comment does not exist');
 		}
 
 		if (comment.userId !== userId) {
-			return res.status(403).send('Forbidden');
+			throw new ServiceError(403, 'Forbidden');
 		}
 
 		const updatedComment = await CommentsRepository.updateComment(dataToUpdate);
 		if(!updatedComment){
-			return res.status(500).send('Can not update the comment');
+			throw new ServiceError(500, 'Can not update the comment');
 		}
 
-		res.send(updatedComment);
+		return updatedComment;
 	}
 
-	async deleteComment(res, commentId, userId) {
+	async deleteComment(commentId, userId) {
 		const comment = await CommentsRepository.getComment(commentId);
 		if(!comment){
-			return res.status(404).send('Comment does not exist');
+			throw new ServiceError(404, 'Comment does not exist');
 		}
 
 		if (comment.userId !== userId) {
-			return res.status(403).send('Forbidden');
+			throw new ServiceError(403, 'Forbidden');
 		}
 
 		const deletedComment = await CommentsRepository.deleteComment(commentId);
 		if(!deletedComment){
-			return res.status(500).send('Can not delete the comment');
+			throw new ServiceError(500, 'Can not delete the comment');
 		}
 
-		res.send(comment);
+		return comment;
 	}
 }
 

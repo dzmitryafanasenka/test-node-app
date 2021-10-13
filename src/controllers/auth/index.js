@@ -22,10 +22,17 @@ authRouter.post('/signup', async (req, res) => {
 			return res.status(400).send(validationError.details);
 		}
 
-		await AuthService.signup(res, { email, password });
+		try {
+			const response = await AuthService.signup({ email, password });
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
-		res.status(500).send('An error occurred');
 		logger.error(error);
+
+		return res.status(500).send('An error occurred');
 	}
 });
 
@@ -39,16 +46,23 @@ authRouter.post('/login', async (req, res) => {
 			return res.status(400).send(loginError.details);
 		}
 
-		await AuthService.login(res, { email, password });
+		try {
+			const response = await AuthService.login({ email, password });
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
-		res.status(500).send('An error occurred');
 		logger.error(error);
+
+		return res.status(500).send('An error occurred');
 	}
 });
 
 authRouter.get('/verify/:id/:token', async (req, res) => {
 	try {
-		const user = await UsersRepository.getUser(null, req.params.id);
+		const user = req.user;
 
 		const userVerificationData = user && {
 			userId: user.userId,
@@ -65,10 +79,18 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 			return res.status(400).send('Invalid link');
 		}
 
-		await AuthService.verifyUser(res, user);
+		try {
+			const response = await AuthService.verifyUser(user);
+			res.send(response);
+		} catch (serviceError) {
+			res.status(serviceError.status).send(serviceError.message);
+		}
+		//res.redirect(`${config.app.client.url}/login`)
+
 	} catch (error) {
-		res.status(500).send('An error occurred');
 		logger.error(error);
+
+		return res.status(500).send('An error occurred');
 	}
 });
 

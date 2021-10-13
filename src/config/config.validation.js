@@ -15,7 +15,10 @@ const configSchema = Joi.object({
 
 	app: Joi.object({
 		host: Joi.string().required(),
-		port: Joi.number().required()
+		port: Joi.number().required(),
+		client: Joi.object({
+			url: Joi.string().required()
+		}).required()
 	}).required(),
 
 	mail: Joi.object({

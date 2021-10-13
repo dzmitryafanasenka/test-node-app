@@ -22,7 +22,12 @@ commentsRouter.post('/:postId/comments', authenticateToken, async (req, res) => 
 			return res.status(400).send('Data is not valid');
 		}
 
-		await CommentsService.createComment(res, dataToCreate);
+		try {
+			const response = await CommentsService.createComment(dataToCreate);
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);
@@ -43,7 +48,13 @@ commentsRouter.put('/:postId/comments/:commentId', authenticateToken, async (req
 			return res.status(400).send('Incorrect data');
 		}
 
-		await CommentsService.updateComment(res, { dataToUpdate, commentId, userId });
+		try {
+			const response = await CommentsService.updateComment({ dataToUpdate, commentId, userId });
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);
@@ -63,7 +74,13 @@ commentsRouter.delete('/:postId/comments/:commentId', authenticateToken, async (
 			return res.status(400).send('Incorrect data');
 		}
 
-		await CommentsService.deleteComment(res, commentId, userId);
+		try{
+			const response = await CommentsService.deleteComment(commentId, userId);
+			res.send(response);
+		} catch (serviceError){
+			res.status(serviceError.status).send(serviceError.message);
+		}
+
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);
