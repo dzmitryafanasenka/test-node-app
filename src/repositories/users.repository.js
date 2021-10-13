@@ -1,7 +1,7 @@
 const uuid = require('uuid').v4;
 
 const db = require('../models');
-const logger = require('../common/logger')('UsersService');
+const logger = require('../common/logger')('UsersRepository');
 
 class UsersRepository {
 	constructor() {

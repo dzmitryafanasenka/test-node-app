@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 
 const config = require('../config/index');
 const jwt = require('jsonwebtoken');
-const logger = require('../common/logger')('authService');
+const logger = require('../common/logger')('AuthService');
 const UsersRepository = require('../repositories/users.repository').instance();
 
 class AuthService {
@@ -43,7 +43,7 @@ class AuthService {
 		} catch (e) {
 			logger.error('Can not send verification email', e);
 
-			return res.status(400).send('Can not send verification email');
+			return res.status(417).send('Can not send verification email');
 		}
 		res.send(publicUserData);
 	}
@@ -70,7 +70,7 @@ class AuthService {
 			);
 			res.send(publicUserData);
 		} else {
-			res.status(400).send('Invalid Credentials');
+			res.status(401).send('Invalid Credentials');
 		}
 	}
 

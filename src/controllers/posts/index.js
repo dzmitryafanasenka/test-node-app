@@ -73,7 +73,7 @@ postsRouter.put('/:postId', authenticateToken, async (req, res) => {
 		try {
 			joi.assert(newPostData, postsValidator.updatePostValidation);
 		} catch (validationError) {
-			return res.status(400).send('All post data is required');
+			return res.status(400).send('Data is not valid');
 		}
 
 		await PostsService.updatePost(res, newPostData, user);

@@ -20,11 +20,13 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/Users"
+                $ref: "#/components/schemas/User"
         "401":
           description: Invalid token
         "403":
           description: A token is required for authentication
+        "404":
+          description: User does not exist
         "500":
           description: Unknown error at the server part
 
@@ -49,7 +51,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/Users"
+                $ref: "#/components/schemas/User"
         "400":
           description: Data is not valid
         "401":
@@ -77,6 +79,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
         "401":
+          description: Invalid token
+        "403":
           description: A token is required for authentication
         "404":
           description: User does not exist
@@ -130,6 +134,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/CreatedPost"
+        "400":
+          description: Data is not valid
         "401":
           description: Invalid token
         "403":
@@ -166,10 +172,12 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Post"
+        "400":
+          description: Data is not valid
         "401":
           description: Invalid token
         "403":
-          description: A token is required for authentication
+          description: Forbidden / Token is required for auth
         "404":
           description: Post does not exist
         "500":
@@ -201,7 +209,7 @@ paths:
         "401":
           description: Invalid token
         "403":
-          description: A token is required for authentication
+          description: Forbidden / A token is required for authentication
         "404":
           description: Post does not exist
         "500":
@@ -225,12 +233,14 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Posts"
+        "400":
+          description: Data is not valid
         "401":
           description: Invalid token
         "403":
           description: A token is required for authentication
         "404":
-          description: Post does not exist
+          description: Can not get posts
         "500":
           description: Unknown error at the server part
 
@@ -264,7 +274,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/Comment"
         "400":
-          description: Invalid Credentials
+          description: Data is not valid
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
         "500":
           description: Unknown error at the server part
 
@@ -304,7 +318,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Comment"
         "400":
-          description: Invalid Credentials
+          description: Data is not valid
+        "401":
+          description: Invalid token
+        "403":
+          description: Forbidden / A token is required for authentication
+        "404":
+          description: Comment does not exist
         "500":
           description: Unknown error at the server part
 
@@ -339,6 +359,10 @@ paths:
                 $ref: "#/components/schemas/Comment"
         "400":
           description: Invalid Credentials
+        "401":
+          description: Invalid token
+        "403":
+          description: Forbidden / A token is required for authentication
         "500":
           description: Unknown error at the server part
 
@@ -359,10 +383,12 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/RegisteredUser"
+        "400":
+          description: Data is not valid
         "409":
           description: User already exists. Please Login
-        "400":
-          description: User is registered, but verification email was not sent because of an error
+        "417":
+          description: User was created, but email was not sent
         "500":
           description: Unknown error at the server part
   /login:
@@ -383,7 +409,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/LoginedUser"
         "400":
-          description: Invalid Credentials
+          description: Data is not valid
+        "401":
+          description: Invalid credentials
         "500":
           description: Unknown error at the server part
 

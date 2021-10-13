@@ -19,7 +19,7 @@ commentsRouter.post('/:postId/comments', authenticateToken, async (req, res) => 
 		try {
 			joi.assert(dataToCreate, commentsValidator.createCommentValidation);
 		} catch (validationError) {
-			return res.status(400).send('Incorrect data');
+			return res.status(400).send('Data is not valid');
 		}
 
 		await CommentsService.createComment(res, dataToCreate);
