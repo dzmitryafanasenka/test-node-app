@@ -4,6 +4,7 @@ const joi = require('joi');
 const AuthService = require('../../services/auth.service').instance();
 const authValidator = require('./validation/index');
 const logger = require('../../common/logger')('AuthController');
+const ServiceError = require('../../common/errors/ServiceError');
 
 const authRouter = app.Router();
 
@@ -19,13 +20,12 @@ authRouter.post('/signup', async (req, res) => {
 
 		const response = await AuthService.signup({ email, password });
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
 
 		return res.status(500).send('Internal Server Error');
@@ -44,13 +44,12 @@ authRouter.post('/login', async (req, res) => {
 
 		const response = await AuthService.login({ email, password });
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
 
 		return res.status(500).send('Internal Server Error');
@@ -78,13 +77,12 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 
 		const response = await AuthService.verifyUser(user);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 		//res.redirect(`${config.app.client.url}/login`)
 	} catch (error) {
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
 
 		return res.status(500).send('Internal Server Error');

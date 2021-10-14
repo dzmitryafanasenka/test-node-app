@@ -4,6 +4,7 @@ const joi = require('joi');
 const logger = require('../../common/logger')('PostsController');
 const PostsService = require('../../services/posts.service').instance();
 const postsValidator = require('./validation/index');
+const ServiceError = require('../../common/errors/ServiceError');
 const { authenticateToken } = require('../../middleware/auth');
 
 const postsRouter = app.Router();
@@ -30,15 +31,15 @@ postsRouter.get('/current', authenticateToken, async (req, res) => {
 
 		const response = await PostsService.getUserPosts(userId);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -61,15 +62,15 @@ postsRouter.post('/', authenticateToken, async (req, res) => {
 
 		const response = await PostsService.createPost(newPostData);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -93,15 +94,15 @@ postsRouter.put('/:postId', authenticateToken, async (req, res) => {
 
 		const response = await PostsService.updatePost(newPostData, user);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -112,15 +113,15 @@ postsRouter.delete('/:postId', authenticateToken, async (req, res) => {
 
 		const response = await PostsService.deletePost(postId, user);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 

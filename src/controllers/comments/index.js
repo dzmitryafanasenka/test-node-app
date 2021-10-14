@@ -4,6 +4,7 @@ const joi = require('joi');
 const CommentsService = require('../../services/comments.service').instance();
 const commentsValidator = require('./validation');
 const logger = require('../../common/logger')('CommentsController');
+const ServiceError = require('../../common/errors/ServiceError');
 const { authenticateToken } = require('../../middleware/auth');
 
 const commentsRouter = app.Router();
@@ -24,15 +25,15 @@ commentsRouter.post('/:postId/comments', authenticateToken, async (req, res) => 
 
 		const response = await CommentsService.createComment(dataToCreate);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -52,15 +53,15 @@ commentsRouter.put('/:postId/comments/:commentId', authenticateToken, async (req
 
 		const response = await CommentsService.updateComment({ dataToUpdate, commentId, userId });
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -77,17 +78,17 @@ commentsRouter.delete('/:postId/comments/:commentId', authenticateToken, async (
 			return res.status(400).send('Incorrect data');
 		}
 
-	  const response = await CommentsService.deleteComment(commentId, userId);
+		const response = await CommentsService.deleteComment(commentId, userId);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
 		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 

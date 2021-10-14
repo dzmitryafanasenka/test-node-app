@@ -19,7 +19,7 @@ class AuthService {
 
 		const existingUser = await UsersRepository.getUser(email);
 		if (existingUser) {
-			return new ServiceError(409, 'User Already Exists. Please Login');
+			throw new ServiceError(409, 'User Already Exists. Please Login');
 		}
 
 		const encryptedPassword = await bcrypt.hash(password, 10);
@@ -44,7 +44,7 @@ class AuthService {
 		} catch (e) {
 			logger.error('Can not send verification email', e);
 
-			return new ServiceError(417, 'Can not send verification email');
+			throw new ServiceError(417, 'Can not send verification email');
 		}
 
 		return publicUserData;
@@ -73,7 +73,7 @@ class AuthService {
 
 			return publicUserData;
 		} else {
-			return new ServiceError(401, 'Invalid Credentials');
+			throw new ServiceError(401, 'Invalid Credentials');
 		}
 	}
 
@@ -81,7 +81,7 @@ class AuthService {
 		const updateRequest = await UsersRepository.activateUser(user.userId);
 
 		if (!updateRequest) {
-			return new ServiceError(500, 'Can\'t verify user');
+			throw new ServiceError(500, 'Can\'t verify user');
 		}
 
 		return 'Email has been verified';

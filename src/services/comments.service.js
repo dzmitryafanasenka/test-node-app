@@ -10,7 +10,7 @@ class CommentsService {
 	async createComment(dataToCreate) {
 		const comment = await CommentsRepository.createComment(dataToCreate);
 		if (!comment) {
-			return new ServiceError(500, 'Unable to create the comment');
+			throw new ServiceError(500, 'Unable to create the comment');
 		}
 
 		return comment;
@@ -21,16 +21,16 @@ class CommentsService {
 
 		const comment = await CommentsRepository.getComment(commentId);
 		if(!comment){
-			return new ServiceError(404, 'Comment does not exist');
+			throw new ServiceError(404, 'Comment does not exist');
 		}
 
 		if (comment.userId !== userId) {
-			return new ServiceError(403, 'Forbidden');
+			throw new ServiceError(403, 'Forbidden');
 		}
 
 		const updatedComment = await CommentsRepository.updateComment(dataToUpdate);
 		if(!updatedComment){
-			return new ServiceError(500, 'Can not update the comment');
+			throw new ServiceError(500, 'Can not update the comment');
 		}
 
 		return updatedComment;
@@ -39,16 +39,16 @@ class CommentsService {
 	async deleteComment(commentId, userId) {
 		const comment = await CommentsRepository.getComment(commentId);
 		if(!comment){
-			return new ServiceError(404, 'Comment does not exist');
+			throw new ServiceError(404, 'Comment does not exist');
 		}
 
 		if (comment.userId !== userId) {
-			return new ServiceError(403, 'Forbidden');
+			throw new ServiceError(403, 'Forbidden');
 		}
 
 		const deletedComment = await CommentsRepository.deleteComment(commentId);
 		if(!deletedComment){
-			return new ServiceError(500, 'Can not delete the comment');
+			throw new ServiceError(500, 'Can not delete the comment');
 		}
 
 		return comment;

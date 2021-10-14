@@ -2,6 +2,7 @@ const app = require('express');
 const joi = require('joi');
 
 const logger = require('../../common/logger')('UsersController');
+const ServiceError = require('../../common/errors/ServiceError');
 const userService = require('../../services/users.service').instance();
 const userValidator = require('./validation/index');
 const { authenticateToken } = require('../../middleware/auth');
@@ -12,15 +13,15 @@ userRouter.get('/current', authenticateToken, async (req, res) => {
 	try {
 		const response = await userService.getUser(req.user.userId);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
-		logger.error('While getting the user', error);
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
+		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -39,15 +40,15 @@ userRouter.patch('/current', authenticateToken, async (req, res) => {
 
 		const response = await userService.updateUser(dataToUpdate);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
-		logger.error('While getting the user', error);
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
+		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -55,15 +56,15 @@ userRouter.delete('/current', authenticateToken, async (req, res) => {
 	try {
 		const response = await userService.deleteUser(req.user.userId);
 
-		if (!response.error){
-			return res.send(response);
-		} else {
-			return res.status(response.error.status).send(response.error.message);
-		}
+		return res.send(response);
 
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
-		logger.error('While deleting the user', error);
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
+		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
 	}
 });
 

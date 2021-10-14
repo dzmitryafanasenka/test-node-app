@@ -28,7 +28,7 @@ paths:
         "404":
           description: User does not exist
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
     patch:
       tags:
@@ -59,7 +59,7 @@ paths:
         "403":
           description: A token is required for authentication
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
     delete:
       tags:
@@ -85,7 +85,7 @@ paths:
         "404":
           description: User does not exist
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
   /posts:
     get:
@@ -110,7 +110,7 @@ paths:
         "403":
           description: A token is required for authentication
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
     post:
       tags:
@@ -141,7 +141,7 @@ paths:
         "403":
           description: A token is required for authentication
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
   /posts/{postId}:
     put:
@@ -181,7 +181,7 @@ paths:
         "404":
           description: Post does not exist
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
     delete:
       tags:
@@ -213,7 +213,7 @@ paths:
         "404":
           description: Post does not exist
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
   /posts/current:
     get:
@@ -242,7 +242,7 @@ paths:
         "404":
           description: Can not get posts
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
   /posts/{postId}/comments:
     post:
@@ -280,7 +280,7 @@ paths:
         "403":
           description: A token is required for authentication
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
   /posts/{postId}/comments/{commentId}:
     put:
@@ -326,7 +326,7 @@ paths:
         "404":
           description: Comment does not exist
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
     delete:
       tags:
@@ -364,7 +364,7 @@ paths:
         "403":
           description: Forbidden / A token is required for authentication
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
   /signup:
     post:
@@ -390,7 +390,7 @@ paths:
         "417":
           description: User was created, but email was not sent
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
   /login:
     post:
       tags:
@@ -413,7 +413,7 @@ paths:
         "401":
           description: Invalid credentials
         "500":
-          description: Unknown error at the server part
+          description: Internal Server Error
 
 tags:
   - name: Users
