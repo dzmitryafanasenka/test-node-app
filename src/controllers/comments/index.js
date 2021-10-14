@@ -31,7 +31,7 @@ commentsRouter.post('/:postId/comments', authenticateToken, async (req, res) => 
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });
@@ -59,7 +59,7 @@ commentsRouter.put('/:postId/comments/:commentId', authenticateToken, async (req
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });
@@ -86,7 +86,7 @@ commentsRouter.delete('/:postId/comments/:commentId', authenticateToken, async (
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });

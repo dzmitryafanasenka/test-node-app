@@ -19,7 +19,7 @@ userRouter.get('/current', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error('While getting the user', error);
 	}
 });
@@ -46,7 +46,7 @@ userRouter.patch('/current', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error('While getting the user', error);
 	}
 });
@@ -62,7 +62,7 @@ userRouter.delete('/current', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error('While deleting the user', error);
 	}
 });

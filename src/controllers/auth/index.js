@@ -1,14 +1,9 @@
 const app = require('express');
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const joi = require('joi');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 
 const AuthService = require('../../services/auth.service').instance();
 const authValidator = require('./validation/index');
 const logger = require('../../common/logger')('AuthController');
-const UsersRepository = require('../../repositories/users.repository').instance();
 
 const authRouter = app.Router();
 
@@ -33,7 +28,7 @@ authRouter.post('/signup', async (req, res) => {
 	} catch (error) {
 		logger.error(error);
 
-		return res.status(500).send('An error occurred');
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -58,7 +53,7 @@ authRouter.post('/login', async (req, res) => {
 	} catch (error) {
 		logger.error(error);
 
-		return res.status(500).send('An error occurred');
+		return res.status(500).send('Internal Server Error');
 	}
 });
 
@@ -92,7 +87,7 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 	} catch (error) {
 		logger.error(error);
 
-		return res.status(500).send('An error occurred');
+		return res.status(500).send('Internal Server Error');
 	}
 });
 

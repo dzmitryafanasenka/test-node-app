@@ -65,9 +65,9 @@ class AuthService {
 		if (userStatus) {
 			publicUserData.token = jwt.sign(
 				{ userId: user.userId },
-				process.env.ACCESS_TOKEN_SECRET,
+				config.jwt.secret,
 				{
-					expiresIn: process.env.TOKEN_EXPIRE_TIME
+					expiresIn: config.jwt.exp
 				}
 			);
 

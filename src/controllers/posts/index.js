@@ -13,7 +13,7 @@ postsRouter.get('/', authenticateToken, async (req, res) => {
 		const posts = await PostsService.getAllPosts();
 		res.send(posts);
 	} catch (error) {
-		res.status(500).send('Can not get all posts');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });
@@ -37,7 +37,7 @@ postsRouter.get('/current', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Can not get all posts');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });
@@ -68,7 +68,7 @@ postsRouter.post('/', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });
@@ -100,7 +100,7 @@ postsRouter.put('/:postId', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });
@@ -119,7 +119,7 @@ postsRouter.delete('/:postId', authenticateToken, async (req, res) => {
 		}
 
 	} catch (error) {
-		res.status(500).send('Unknown error');
+		res.status(500).send('Internal Server Error');
 		logger.error(error);
 	}
 });

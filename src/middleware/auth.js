@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+const config = require('../config/index');
 const logger = require('../common/logger')('AuthMiddleware');
 const UsersRepository = require('../repositories/users.repository').instance();
 
@@ -8,7 +9,7 @@ async function authenticateToken(req, res, next) {
 	if (!token) return res.status(403).send('A token is required for authentication');
 
 	try {
-		const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+		const decoded = jwt.verify(token, config.jwt.secret);
 		logger.debug(decoded);
 
 		const user = await UsersRepository.getUser(null, decoded.userId);
