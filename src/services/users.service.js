@@ -10,7 +10,7 @@ class UsersService {
 	async updateUser(dataToUpdate) {
 		const updatedUser = await UsersRepository.updateUser(dataToUpdate);
 		if (!updatedUser) {
-			throw new ServiceError(500, 'Unknown error');
+			return new ServiceError(500, 'Unknown error');
 		}
 
 		const publicUserData = {
@@ -28,12 +28,12 @@ class UsersService {
 		const user = await UsersRepository.getUser(null, userId);
 
 		if (!user) {
-			throw new ServiceError(404, 'User does not exist');
+			return new ServiceError(404, 'User does not exist');
 		}
 
 		const deleteResult = await UsersRepository.deleteUser(userId);
 		if (!deleteResult) {
-			throw new ServiceError(500, 'Can not delete user');
+			return new ServiceError(500, 'Can not delete user');
 		}
 
 		const publicUserData = {
@@ -51,7 +51,7 @@ class UsersService {
 		const user = await UsersRepository.getUser(null, userId);
 
 		if (!user) {
-			throw new ServiceError(404, 'User does not exist');
+			return new ServiceError(404, 'User does not exist');
 		}
 
 		const publicUserData = {

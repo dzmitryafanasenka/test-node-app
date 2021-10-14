@@ -28,11 +28,12 @@ postsRouter.get('/current', authenticateToken, async (req, res) => {
 			return res.status(400).send('Data is not valid');
 		}
 
-		try {
-			const response = await PostsService.getUserPosts(userId);
-			res.send(response);
-		} catch (serviceError) {
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await PostsService.getUserPosts(userId);
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
 
 	} catch (error) {
@@ -58,11 +59,12 @@ postsRouter.post('/', authenticateToken, async (req, res) => {
 			return res.status(400).send('Data is not valid');
 		}
 
-		try {
-			const response = await PostsService.createPost(newPostData);
-			res.send(response);
-		} catch (serviceError){
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await PostsService.createPost(newPostData);
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
 
 	} catch (error) {
@@ -89,12 +91,14 @@ postsRouter.put('/:postId', authenticateToken, async (req, res) => {
 			return res.status(400).send('Data is not valid');
 		}
 
-		try {
-			const response = await PostsService.updatePost(newPostData, user);
-			res.send(response);
-		} catch (serviceError){
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await PostsService.updatePost(newPostData, user);
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
+
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);
@@ -106,12 +110,14 @@ postsRouter.delete('/:postId', authenticateToken, async (req, res) => {
 		const { postId } = req.params;
 		const { user } = req;
 
-		try {
-			const response = await PostsService.deletePost(postId, user);
-			res.send(response);
-		} catch (serviceError){
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await PostsService.deletePost(postId, user);
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
+
 	} catch (error) {
 		res.status(500).send('Unknown error');
 		logger.error(error);

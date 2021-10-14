@@ -1,7 +1,8 @@
-class ServiceError extends Error {
+class ServiceError {
 	constructor(status, message) {
-		super(message);
-		this.status = status;
+		this.error = {
+			status, message
+		};
 	}
 }
 

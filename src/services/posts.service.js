@@ -15,7 +15,7 @@ class PostsService {
 	async createPost(newPostData) {
 		const createdPost = await PostsRepository.addPost(newPostData);
 		if (!createdPost) {
-			throw new ServiceError(500, 'Can not create the post');
+			return new ServiceError(500, 'Can not create the post');
 		}
 
 		return createdPost;
@@ -24,7 +24,7 @@ class PostsService {
 	async getUserPosts(userId) {
 		const data = await PostsRepository.getUserPosts(userId);
 		if (!data) {
-			throw new ServiceError(404, 'Can not get posts');
+			return new ServiceError(404, 'Can not get posts');
 		}
 
 		return data;
@@ -34,16 +34,16 @@ class PostsService {
 		const post = await PostsRepository.getPostById(newPostData.postId);
 
 		if (!post) {
-			throw new ServiceError(404, 'Post does not exist');
+			return new ServiceError(404, 'Post does not exist');
 		}
 
 		if (post.userId !== user.userId) {
-			throw new ServiceError(403, 'Forbidden');
+			return new ServiceError(403, 'Forbidden');
 		}
 
 		const updatedPost = await PostsRepository.updatePost(newPostData);
 		if (!updatedPost) {
-			throw new ServiceError(500, 'Cann not update the post');
+			return new ServiceError(500, 'Cann not update the post');
 		}
 
 		return updatedPost;
@@ -53,16 +53,16 @@ class PostsService {
 		const post = await PostsRepository.getPostById(postId);
 
 		if (!post) {
-			throw new ServiceError(404, 'Post does not exist');
+			return new ServiceError(404, 'Post does not exist');
 		}
 
 		if (post.userId !== user.userId) {
-			throw new ServiceError(403, 'Forbidden');
+			return new ServiceError(403, 'Forbidden');
 		}
 
 		const data = await PostsRepository.deletePost(postId);
 		if (!data) {
-			throw new ServiceError(500, 'Can not delete the post');
+			return new ServiceError(500, 'Can not delete the post');
 		}
 
 		return post;

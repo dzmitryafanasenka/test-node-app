@@ -31,4 +31,6 @@ db.comments.belongsTo(db.users, { foreignKey: 'userId', as: 'user' });
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+sequelize.sync({ force: true });
+
 module.exports = db;

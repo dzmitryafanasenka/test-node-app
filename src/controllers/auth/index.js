@@ -22,11 +22,12 @@ authRouter.post('/signup', async (req, res) => {
 			return res.status(400).send(validationError.details);
 		}
 
-		try {
-			const response = await AuthService.signup({ email, password });
-			res.send(response);
-		} catch (serviceError){
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await AuthService.signup({ email, password });
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
 
 	} catch (error) {
@@ -46,11 +47,12 @@ authRouter.post('/login', async (req, res) => {
 			return res.status(400).send(loginError.details);
 		}
 
-		try {
-			const response = await AuthService.login({ email, password });
-			res.send(response);
-		} catch (serviceError){
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await AuthService.login({ email, password });
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
 
 	} catch (error) {
@@ -79,14 +81,14 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 			return res.status(400).send('Invalid link');
 		}
 
-		try {
-			const response = await AuthService.verifyUser(user);
-			res.send(response);
-		} catch (serviceError) {
-			res.status(serviceError.status).send(serviceError.message);
+		const response = await AuthService.verifyUser(user);
+
+		if (!response.error){
+			return res.send(response);
+		} else {
+			return res.status(response.error.status).send(response.error.message);
 		}
 		//res.redirect(`${config.app.client.url}/login`)
-
 	} catch (error) {
 		logger.error(error);
 
