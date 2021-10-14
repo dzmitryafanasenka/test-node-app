@@ -9,9 +9,12 @@ const { authenticateToken } = require('../../middleware/auth');
 
 const userRouter = app.Router();
 
-userRouter.get('/current', authenticateToken, async (req, res) => {
+userRouter.get('/', authenticateToken, async (req, res) => {
 	try {
-		const response = await userService.getUser(req.user.userId);
+		const response = await userService.getAllUsers();
+		if(!response){
+			res.status(500).send('Internal Server Error');
+		}
 
 		return res.send(response);
 
@@ -25,10 +28,31 @@ userRouter.get('/current', authenticateToken, async (req, res) => {
 	}
 });
 
-userRouter.patch('/current', authenticateToken, async (req, res) => {
+userRouter.get('/:userId', authenticateToken, async (req, res) => {
+	try {
+		const { userId } = req.params;
+		const response = await userService.getUser(userId);
+
+		return res.send(response);
+
+	} catch (error) {
+		if (error instanceof ServiceError) {
+			return res.status(error.status).send(error.message);
+		}
+		logger.error(error);
+
+		return res.status(500).send('Internal Server Error');
+	}
+});
+
+userRouter.patch('/:userId', authenticateToken, async (req, res) => {
 	try {
 		const { nickname, phone } = req.body;
 		const { userId } = req.user;
+
+		if (userId !== req.params.userId) {
+			return res.status(403).send('Forbidden');
+		}
 
 		const dataToUpdate = { nickname, phone, userId };
 
@@ -52,9 +76,15 @@ userRouter.patch('/current', authenticateToken, async (req, res) => {
 	}
 });
 
-userRouter.delete('/current', authenticateToken, async (req, res) => {
+userRouter.delete('/:userId', authenticateToken, async (req, res) => {
 	try {
-		const response = await userService.deleteUser(req.user.userId);
+		const { userId } = req.params;
+
+		if (req.user.userId !== userId) {
+			return res.status(403).send('Forbidden');
+		}
+
+		const response = await userService.deleteUser(userId);
 
 		return res.send(response);
 

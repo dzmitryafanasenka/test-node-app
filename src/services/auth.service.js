@@ -53,6 +53,9 @@ class AuthService {
 	async login(data) {
 		const { email, password } = data;
 		const user = await UsersRepository.getUser(email);
+		if (!user) {
+			throw new ServiceError(404, 'User does not exist');
+		}
 
 		const publicUserData = {
 			userId: user.userId,
@@ -77,7 +80,7 @@ class AuthService {
 		}
 	}
 
-	async verifyUser(user){
+	async verifyUser(user) {
 		const updateRequest = await UsersRepository.activateUser(user.userId);
 
 		if (!updateRequest) {

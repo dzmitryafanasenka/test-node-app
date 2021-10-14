@@ -52,7 +52,8 @@ class UsersRepository {
 	async getAllUsers() {
 		return await this._users.findAll({
 			include: [{
-				model: db.posts
+				model: db.posts,
+				include: [{ model: db.comments }]
 			}]
 		});
 	}

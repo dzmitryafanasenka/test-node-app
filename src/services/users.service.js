@@ -64,6 +64,26 @@ class UsersService {
 
 		return publicUserData;
 	}
+
+	async getAllUsers() {
+		const allUsers = await UsersRepository.getAllUsers();
+
+		const publicUsersData = allUsers.map((user) => {
+			return {
+				userId: user.userId,
+				email: user.email,
+				nickname: user.nickname,
+				phone: user.phone,
+				posts: user.posts
+			};
+		});
+
+		if (!publicUsersData) {
+			throw new ServiceError(404, 'Users not found');
+		}
+
+		return publicUsersData;
+	}
 }
 
 const userService = new UsersService();

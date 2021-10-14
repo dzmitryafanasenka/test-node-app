@@ -3,7 +3,34 @@ info:
   version: 1.0.0
   title: Node js test project
 paths:
-  /users/current:
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all data about all users
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Users"
+        "401":
+          description: Invalid token
+        "403":
+          description: A token is required for authentication
+        "404":
+          description: User does not exist
+        "500":
+          description: Internal Server Error
+
+  /users/{userId}:
     get:
       tags:
         - Users
@@ -14,6 +41,12 @@ paths:
           schema:
             type: string
           required: true
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID of the user to get
       responses:
         "200":
           description: OK
@@ -45,6 +78,12 @@ paths:
           schema:
             type: string
           required: true
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID of the user to update
       responses:
         "200":
           description: OK
@@ -71,6 +110,12 @@ paths:
           schema:
             type: string
           required: true
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID of the user to delete
       responses:
         "200":
           description: OK
@@ -410,6 +455,8 @@ paths:
                 $ref: "#/components/schemas/LoginedUser"
         "400":
           description: Data is not valid
+        "404":
+          description: User does not exist
         "401":
           description: Invalid credentials
         "500":
