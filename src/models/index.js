@@ -13,6 +13,7 @@ logger.info(`Connecting to the host - [ ${dbConfig.host} ], database - [ ${dbCon
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
 	dialect: dbConfig.dialect,
 	host: dbConfig.host,
+	port: dbConfig.port,
 	logging: (msg) => logger.trace(msg)
 });
 

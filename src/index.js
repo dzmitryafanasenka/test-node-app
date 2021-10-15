@@ -35,6 +35,10 @@ class App {
 		this.express.use('/posts', postsController);
 		this.express.use('/posts', commentsController);
 
+		this.express.use((req, res, next) => {
+			res.status(404).send('Not found')
+		})
+
 		this.express.listen(PORT, () => {
 			logger.info(`Server has successfully started on port ${PORT}`);
 		});
@@ -48,6 +52,8 @@ class App {
 			logger.info('Connection has been established successfully');
 		} catch (error) {
 			logger.error('Unable to connect to the database:', error);
+
+			return process.exit()
 		}
 	}
 
