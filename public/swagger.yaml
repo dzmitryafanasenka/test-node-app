@@ -2,18 +2,17 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Node js test project
+servers:
+  - url: 'http://178.124.178.6:3000/'
+  - url: 'http://127.0.0.1:3000/'
 paths:
   /users:
     get:
       tags:
         - Users
+      security:
+        - JWT: []
       summary: Get all data about all users
-      parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
       responses:
         "200":
           description: OK
@@ -35,12 +34,9 @@ paths:
       tags:
         - Users
       summary: Get all data about current user
+      security:
+        - JWT: [ ]
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: userId
           schema:
@@ -67,17 +63,14 @@ paths:
       tags:
         - Users
       summary: Update user data
+      security:
+        - JWT: [ ]
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UpdateUser"
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: userId
           schema:
@@ -104,12 +97,9 @@ paths:
       tags:
         - Users
       summary: Delete current user
+      security:
+        - JWT: [ ]
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: userId
           schema:
@@ -137,12 +127,8 @@ paths:
       tags:
         - Posts
       summary: Get all posts in the system
-      parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
+      security:
+        - JWT: [ ]
       responses:
         "200":
           description: OK
@@ -161,17 +147,13 @@ paths:
       tags:
         - Posts
       summary: Create a new post
+      security:
+        - JWT: [ ]
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/CreatePost"
-      parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
       responses:
         "200":
           description: OK
@@ -193,17 +175,14 @@ paths:
       tags:
         - Posts
       summary: Update selected post
+      security:
+        - JWT: [ ]
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/UpdatePost"
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: postId
           schema:
@@ -232,12 +211,9 @@ paths:
       tags:
         - Posts
       summary: Delete selected post
+      security:
+        - JWT: [ ]
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: postId
           schema:
@@ -265,12 +241,8 @@ paths:
       tags:
         - Posts
       summary: Get all posts created by the current user
-      parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
+      security:
+        - JWT: [ ]
       responses:
         "200":
           description: OK
@@ -294,12 +266,9 @@ paths:
       tags:
         - Comments
       summary: Add a comment to selected post
+      security:
+        - JWT: [ ]
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: postId
           schema:
@@ -332,12 +301,9 @@ paths:
       tags:
         - Comments
       summary: Update comment
+      security:
+        - JWT: [ ]
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: postId
           schema:
@@ -377,12 +343,9 @@ paths:
       tags:
         - Comments
       summary: Delete comment
+      security:
+        - JWT: [ ]
       parameters:
-        - in: header
-          name: x-access-token
-          schema:
-            type: string
-          required: true
         - in: path
           name: postId
           schema:
@@ -472,6 +435,13 @@ tags:
   - name: Comments
     description: API for post comments
 components:
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: The JWT authorization
+
   schemas:
     RegisteredUser:
       type: object

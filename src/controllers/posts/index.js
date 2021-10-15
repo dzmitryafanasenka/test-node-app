@@ -1,15 +1,17 @@
 const app = require('express');
-
 const joi = require('joi');
+const passport = require('passport');
+
+const auth = require('../../middleware/auth');
 const logger = require('../../common/logger')('PostsController');
 const PostsService = require('../../services/posts.service').instance();
 const postsValidator = require('./validation/index');
 const ServiceError = require('../../common/errors/ServiceError');
-const { authenticateToken } = require('../../middleware/auth');
 
 const postsRouter = app.Router();
 
-postsRouter.get('/', authenticateToken, async (req, res) => {
+
+postsRouter.get('/', auth, async (req, res) => {
 	try {
 		const posts = await PostsService.getAllPosts();
 		res.send(posts);
@@ -19,7 +21,7 @@ postsRouter.get('/', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.get('/current', authenticateToken, async (req, res) => {
+postsRouter.get('/current', auth, async (req, res) => {
 	try {
 		const { userId } = req.user;
 
@@ -43,7 +45,7 @@ postsRouter.get('/current', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.post('/', authenticateToken, async (req, res) => {
+postsRouter.post('/', auth, async (req, res) => {
 	try {
 		const { title, body } = req.body;
 		const { user } = req;
@@ -59,7 +61,6 @@ postsRouter.post('/', authenticateToken, async (req, res) => {
 		} catch (validationError) {
 			return res.status(400).send('Data is not valid');
 		}
-
 		const response = await PostsService.createPost(newPostData);
 
 		return res.send(response);
@@ -74,7 +75,7 @@ postsRouter.post('/', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.put('/:postId', authenticateToken, async (req, res) => {
+postsRouter.put('/:postId', auth, async (req, res) => {
 	try {
 		const { title, body } = req.body;
 		const { postId } = req.params;
@@ -106,7 +107,7 @@ postsRouter.put('/:postId', authenticateToken, async (req, res) => {
 	}
 });
 
-postsRouter.delete('/:postId', authenticateToken, async (req, res) => {
+postsRouter.delete('/:postId', auth, async (req, res) => {
 	try {
 		const { postId } = req.params;
 		const { user } = req;

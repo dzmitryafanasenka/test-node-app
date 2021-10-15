@@ -1,5 +1,7 @@
+const cors = require('cors');
 const express = require('express');
 const joi = require('joi');
+const passport = require('passport');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 require('dotenv').config();
@@ -10,6 +12,7 @@ const logger = require('./common/logger')('app');
 const swaggerDocument = YAML.load('./public/swagger.yaml');
 const { sequelize } = require('./models/index');
 
+require('./config/passport')(passport);
 
 const authController = require('./controllers/auth');
 const commentsController = require('./controllers/comments');
@@ -24,11 +27,16 @@ class App {
 
 		this.express = new express();
 		this.express.use(express.json());
+
+		this.express.use(cors());
+
 		this.express.use(
 			'/api-docs',
 			swaggerUi.serve,
 			swaggerUi.setup(swaggerDocument)
 		);
+
+		this.express.use(passport.initialize());
 
 		this.express.use('/users', usersController);
 		this.express.use('/', authController);
@@ -36,8 +44,8 @@ class App {
 		this.express.use('/posts', commentsController);
 
 		this.express.use((req, res, next) => {
-			res.status(404).send('Not found')
-		})
+			res.status(404).send('Not found');
+		});
 
 		this.express.listen(PORT, () => {
 			logger.info(`Server has successfully started on port ${PORT}`);
@@ -53,7 +61,7 @@ class App {
 		} catch (error) {
 			logger.error('Unable to connect to the database:', error);
 
-			return process.exit()
+			return process.exit();
 		}
 	}
 

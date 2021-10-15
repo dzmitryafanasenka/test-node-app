@@ -32,7 +32,7 @@ authRouter.post('/signup', async (req, res) => {
 	}
 });
 
-authRouter.post('/login', async (req, res) => {
+authRouter.post('/login', async (req, res, next) => {
 	try {
 		const { email, password } = req.body;
 
@@ -44,7 +44,7 @@ authRouter.post('/login', async (req, res) => {
 
 		const response = await AuthService.login({ email, password });
 
-		return res.send(response);
+		res.send(response);
 
 	} catch (error) {
 		if (error instanceof ServiceError) {

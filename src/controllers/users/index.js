@@ -1,18 +1,18 @@
 const app = require('express');
 const joi = require('joi');
 
+const auth = require('../../middleware/auth');
 const logger = require('../../common/logger')('UsersController');
 const ServiceError = require('../../common/errors/ServiceError');
 const userService = require('../../services/users.service').instance();
 const userValidator = require('./validation/index');
-const { authenticateToken } = require('../../middleware/auth');
 
 const userRouter = app.Router();
 
-userRouter.get('/', authenticateToken, async (req, res) => {
+userRouter.get('/', auth, async (req, res) => {
 	try {
 		const response = await userService.getAllUsers();
-		if(!response){
+		if (!response) {
 			res.status(500).send('Internal Server Error');
 		}
 
@@ -28,7 +28,7 @@ userRouter.get('/', authenticateToken, async (req, res) => {
 	}
 });
 
-userRouter.get('/:userId', authenticateToken, async (req, res) => {
+userRouter.get('/:userId', auth, async (req, res) => {
 	try {
 		const { userId } = req.params;
 		const response = await userService.getUser(userId);
@@ -45,7 +45,7 @@ userRouter.get('/:userId', authenticateToken, async (req, res) => {
 	}
 });
 
-userRouter.patch('/:userId', authenticateToken, async (req, res) => {
+userRouter.patch('/:userId', auth, async (req, res) => {
 	try {
 		const { nickname, phone } = req.body;
 		const { userId } = req.user;
@@ -76,7 +76,7 @@ userRouter.patch('/:userId', authenticateToken, async (req, res) => {
 	}
 });
 
-userRouter.delete('/:userId', authenticateToken, async (req, res) => {
+userRouter.delete('/:userId', auth, async (req, res) => {
 	try {
 		const { userId } = req.params;
 

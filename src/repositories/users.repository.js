@@ -78,7 +78,7 @@ class UsersRepository {
 			});
 		}
 
-		return result && result.dataValues;
+		return result;
 	}
 }
 

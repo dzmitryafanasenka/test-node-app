@@ -1,15 +1,15 @@
 const app = require('express');
 const joi = require('joi');
 
+const auth = require('../../middleware/auth');
 const CommentsService = require('../../services/comments.service').instance();
 const commentsValidator = require('./validation');
 const logger = require('../../common/logger')('CommentsController');
 const ServiceError = require('../../common/errors/ServiceError');
-const { authenticateToken } = require('../../middleware/auth');
 
 const commentsRouter = app.Router();
 
-commentsRouter.post('/:postId/comments', authenticateToken, async (req, res) => {
+commentsRouter.post('/:postId/comments', auth, async (req, res) => {
 	try {
 		const { postId } = req.params;
 		const { userId } = req.user;
@@ -37,7 +37,7 @@ commentsRouter.post('/:postId/comments', authenticateToken, async (req, res) => 
 	}
 });
 
-commentsRouter.put('/:postId/comments/:commentId', authenticateToken, async (req, res) => {
+commentsRouter.put('/:postId/comments/:commentId', auth, async (req, res) => {
 	try {
 		const { postId, commentId } = req.params;
 		const { userId } = req.user;
@@ -65,7 +65,7 @@ commentsRouter.put('/:postId/comments/:commentId', authenticateToken, async (req
 	}
 });
 
-commentsRouter.delete('/:postId/comments/:commentId', authenticateToken, async (req, res) => {
+commentsRouter.delete('/:postId/comments/:commentId', auth, async (req, res) => {
 	try {
 		const { postId, commentId } = req.params;
 		const { userId } = req.user;
