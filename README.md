@@ -26,10 +26,18 @@
 
 https://github.com/igorlyatskiy/test-node-app
 
+## Документация 
+
+http://178.124.178.6:3000/api-docs/#/
+
 ## Запуск проекта
 
 - Клонируем репозиторий
 - Устанавливаем все зависимости `npm install`
-- Запускаем `npm start`
-- TBA
+- Запускаем `npm run dev`
 
+## Деплой проета
+
+- Обновляем образ сервера `docker build . -t NAME` 
+- Пушим его в docker hub `docker push NAME`
+- Деплоим с помощью docker-compose 
