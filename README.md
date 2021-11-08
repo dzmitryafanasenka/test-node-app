@@ -26,3 +26,7 @@ The documentation could be found [here](http://178.124.178.6:3000/api-docs).
 
 1. Run the PostgreSQL server. ( You can use `docker-compose start db` command to run PostgreSQL server in the docker container)
 2. Run `node index.js` to start the Node.js server
+
+## Release notes
+
+Release notes could be found [here](./.releases).
