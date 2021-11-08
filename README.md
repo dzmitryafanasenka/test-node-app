@@ -1,43 +1,28 @@
-# Node test app
+# Node.js Blog Service API
 
-## О проекте
+This project was created by [Igor Lyatsky](https://github.com/igorlyatskiy) as part of an iTechArt internship.
 
-Используя Express.js и PostgreSQL, Sequelize ORM написать приложение, которое имеет следующие возможности:
+I'm maintaining this project for use as a server for interns client applications.
 
-- Аутентификация с помощью JWT
-- Пользователи
-  - Создание пользователя (используя email в качестве логина)
-  - Отправка email со ссылкой для подтверждения создания пользователя.
-  - Редактирование информации пользователя.
-  - Деактивация (удалени) пользователя.
-- Посты
-  - Получения постов текущего пользователя.
-  - Получение всех постов.
-  - Создание поста для текущего пользователя.
-  - Редактирование поста текущего пользователя.
-  - Удаление поста текущего пользователя.
-- Комментарии
-  - Создание комментария к посту
-  - Редактирование комментария
-  - Удаление комментария
-
-
-## Файлы проекта
+## Original Repository
 
 https://github.com/igorlyatskiy/test-node-app
 
-## Документация 
+## Documentation
 
-http://178.124.178.6:3000/api-docs/#/
+The documentation could be found [here](http://178.124.178.6:3000/api-docs).
 
-## Запуск проекта
+## How to run
 
-- Клонируем репозиторий
-- Устанавливаем все зависимости `npm install`
-- Запускаем `npm run dev`
+- Clone the repository
+- Run `npm install` command
+- Create a `.env` file (use `.env.example` as an example)
 
-## Деплой проета
+### with Docker
 
-- Обновляем образ сервера `docker build . -t NAME` 
-- Пушим его в docker hub `docker push NAME`
-- Деплоим с помощью docker-compose 
+- Run `npm run dev`
+
+### without Docker
+
+1. Run the PostgreSQL server. ( You can use `docker-compose start db` command to run PostgreSQL server in the docker container)
+2. Run `node index.js` to start the Node.js server
