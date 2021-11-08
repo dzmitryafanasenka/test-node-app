@@ -13,15 +13,13 @@ class UsersService {
 			throw new ServiceError(500, 'Unknown error');
 		}
 
-		const publicUserData = {
+		return {
 			userId: updatedUser.userId,
 			email: updatedUser.email,
 			nickname: updatedUser.nickname,
 			phone: updatedUser.phone,
 			posts: updatedUser.posts
 		};
-
-		return publicUserData;
 	}
 
 	async deleteUser(userId) {
@@ -36,33 +34,35 @@ class UsersService {
 			throw new ServiceError(500, 'Can not delete user');
 		}
 
-		const publicUserData = {
+		return {
 			userId: user.userId,
 			email: user.email,
 			nickname: user.nickname,
 			phone: user.phone,
 			posts: user.posts
 		};
-
-		return publicUserData;
 	}
 
-	async getUser(userId) {
+	async getFullUserInfo(userId) {
 		const user = await UsersRepository.getUser(null, userId);
 
 		if (!user) {
 			throw new ServiceError(404, 'User does not exist');
 		}
 
-		const publicUserData = {
+		return user;
+	}
+
+	async getUser(userId) {
+		const user = await this.getFullUserInfo(userId);
+
+		return {
 			userId: user.userId,
 			email: user.email,
 			nickname: user.nickname,
 			phone: user.phone,
 			posts: user.posts
 		};
-
-		return publicUserData;
 	}
 
 	async getAllUsers() {

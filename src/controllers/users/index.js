@@ -11,6 +11,8 @@ const userRouter = app.Router();
 
 userRouter.get('/', auth, async (req, res) => {
 	try {
+		logger.debug('Getting all users.');
+		
 		const response = await userService.getAllUsers();
 		if (!response) {
 			res.status(500).send('Internal Server Error');
@@ -31,6 +33,9 @@ userRouter.get('/', auth, async (req, res) => {
 userRouter.get('/:userId', auth, async (req, res) => {
 	try {
 		const { userId } = req.params;
+
+		logger.debug(`Getting the user - [ ${userId} ].`);
+		
 		const response = await userService.getUser(userId);
 
 		return res.send(response);
@@ -49,6 +54,8 @@ userRouter.patch('/:userId', auth, async (req, res) => {
 	try {
 		const { nickname, phone } = req.body;
 		const { userId } = req.user;
+
+		logger.debug(`Updating the user - [ ${userId} ].`);
 
 		if (userId !== req.params.userId) {
 			return res.status(403).send('Forbidden');
@@ -79,6 +86,8 @@ userRouter.patch('/:userId', auth, async (req, res) => {
 userRouter.delete('/:userId', auth, async (req, res) => {
 	try {
 		const { userId } = req.params;
+
+		logger.debug(`Deleting the user - [ ${userId} ].`);
 
 		if (req.user.userId !== userId) {
 			return res.status(403).send('Forbidden');

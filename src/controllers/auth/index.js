@@ -6,12 +6,14 @@ const authValidator = require('./validation/index');
 const config = require('../../config');
 const logger = require('../../common/logger')('AuthController');
 const ServiceError = require('../../common/errors/ServiceError');
+const UserService = require('../../services/users.service').instance();
 
 const authRouter = app.Router();
 
 authRouter.post('/signup', async (req, res) => {
 	try {
 		const { email, password } = req.body;
+		logger.debug(`Creating a user with email - [ ${email} ]`);
 
 		try {
 			joi.assert({ email, password }, authValidator.signUpValidation);
@@ -37,6 +39,8 @@ authRouter.post('/login', async (req, res, next) => {
 	try {
 		const { email, password } = req.body;
 
+		logger.debug(`User with email - [ ${email} ] is trying to login.`);
+
 		try {
 			joi.assert({ email, password }, authValidator.loginValidation);
 		} catch (loginError) {
@@ -59,7 +63,11 @@ authRouter.post('/login', async (req, res, next) => {
 
 authRouter.get('/verify/:id/:token', async (req, res) => {
 	try {
-		const user = req.user;
+		const { id, token } = req.params;
+
+		logger.debug(`Verifying a user - [ ${id} ] with token - [ ${token} ].`);
+
+		const user = await UserService.getFullUserInfo(id);
 
 		const userVerificationData = user && {
 			userId: user.userId,
@@ -76,15 +84,7 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 			return res.status(400).send('Invalid link');
 		}
 
-		try {
-			await AuthService.verifyUser(user);	
-		} catch (error) {
-			logger.error('Error at the verification method', error);
-			
-			const status = error instanceof ServiceError ? error.status : 500;
-
-			return res.status(status).send('Internal Server Error');
-		}
+		await AuthService.verifyUser(user, token);
 
 		return res.redirect(`${config.app.client.url}`);
 	} catch (error) {

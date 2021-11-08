@@ -57,15 +57,20 @@ class AuthService {
 			throw new ServiceError(404, 'User does not exist');
 		}
 
-		const publicUserData = {
-			userId: user.userId,
-			email: user.email,
-			nickname: user.nickname,
-			phone: user.phone
-		};
-
 		const userStatus = user && (await bcrypt.compare(password, user.password));
+		
 		if (userStatus) {
+			if (!user.activated) {
+				throw new ServiceError(403, 'User is not activated');
+			}
+			
+			const publicUserData = {
+				userId: user.userId,
+				email: user.email,
+				nickname: user.nickname,
+				phone: user.phone
+			};
+			
 			publicUserData.token = jwt.sign(
 				{ userId: user.userId },
 				config.jwt.secret,
@@ -80,7 +85,11 @@ class AuthService {
 		}
 	}
 
-	async verifyUser(user) {
+	async verifyUser(user, token) {
+		if (user.activationCode !== token) {
+			throw new ServiceError(401, 'Invalid Token');
+		}
+		
 		const updateRequest = await UsersRepository.activateUser(user.userId);
 
 		if (!updateRequest) {

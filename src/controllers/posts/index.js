@@ -13,6 +13,8 @@ const postsRouter = app.Router();
 
 postsRouter.get('/', auth, async (req, res) => {
 	try {
+		logger.debug('Getting posts.');
+		
 		const posts = await PostsService.getAllPosts();
 		res.send(posts);
 	} catch (error) {
@@ -24,6 +26,8 @@ postsRouter.get('/', auth, async (req, res) => {
 postsRouter.get('/current', auth, async (req, res) => {
 	try {
 		const { userId } = req.user;
+
+		logger.debug(`Getting posts for the user - [ ${userId} ].`);
 
 		try {
 			joi.assert({ userId }, postsValidator.getPostValidation);
@@ -49,6 +53,8 @@ postsRouter.post('/', auth, async (req, res) => {
 	try {
 		const { title, body } = req.body;
 		const { user } = req;
+
+		logger.debug(`User - [ ${user.userId} ] is creating a post.`);
 
 		const newPostData = {
 			userId: user && user.userId,
@@ -81,6 +87,8 @@ postsRouter.put('/:postId', auth, async (req, res) => {
 		const { postId } = req.params;
 		const { user } = req;
 
+		logger.debug(`User - [ ${user.userId} ] is updating the post - [ ${postId} ].`);
+
 		const newPostData = {
 			postId,
 			title,
@@ -111,6 +119,8 @@ postsRouter.delete('/:postId', auth, async (req, res) => {
 	try {
 		const { postId } = req.params;
 		const { user } = req;
+
+		logger.debug(`User - [ ${user.userId} ] is deleting the post - [ ${postId} ].`);
 
 		const response = await PostsService.deletePost(postId, user);
 

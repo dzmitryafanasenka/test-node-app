@@ -15,6 +15,8 @@ commentsRouter.post('/:postId/comments', auth, async (req, res) => {
 		const { userId } = req.user;
 		const { body } = req.body;
 
+		logger.debug(`User - [ ${userId} ] is creating a comment for post - [ ${postId} ].`);
+
 		const dataToCreate = { postId, userId, body };
 
 		try {
@@ -43,6 +45,8 @@ commentsRouter.put('/:postId/comments/:commentId', auth, async (req, res) => {
 		const { userId } = req.user;
 		const { body } = req.body;
 
+		logger.debug(`User - [ ${userId} ] is updating the comment - [ ${commentId} ] for post - [ ${postId} ].`);
+
 		const dataToUpdate = { postId, commentId, userId, body };
 
 		try {
@@ -69,6 +73,8 @@ commentsRouter.delete('/:postId/comments/:commentId', auth, async (req, res) => 
 	try {
 		const { postId, commentId } = req.params;
 		const { userId } = req.user;
+
+		logger.debug(`User - [ ${userId} ] is deleting the comment - [ ${commentId} ] for post - [ ${postId} ].`);
 
 		const dataToDelete = { postId, commentId, userId };
 

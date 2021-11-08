@@ -1,10 +1,11 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
-  title: Node js test project
+  version: 1.0.1
+  title: Node js Blog API
 servers:
   - url: 'http://178.124.178.6:3000/'
   - url: 'http://127.0.0.1:3000/'
+  - url: 'http://127.0.0.1:3001/'
 paths:
   /users:
     get:

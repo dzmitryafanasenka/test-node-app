@@ -13,9 +13,7 @@ services:
       - "5432:5432"
 
   backend:
-    image: igorlyatskiy/test-node-app:latest
-    volumes:
-      - ./:/usr/src/app
+    image: jaymorrison/test-node-app:latest
     ports:
       - "3000:3000"
     depends_on:
