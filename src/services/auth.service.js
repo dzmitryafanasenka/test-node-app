@@ -18,12 +18,14 @@ class AuthService {
 		const { email, password } = data;
 
 		const existingUser = await UsersRepository.getUser(email);
+		
 		if (existingUser) {
 			throw new ServiceError(409, 'User Already Exists. Please Login');
 		}
 
 		const encryptedPassword = await bcrypt.hash(password, 10);
 		const activationCode = crypto.randomBytes(32).toString('hex');
+		
 		const user = await UsersRepository.addUser({
 			email: email.toLowerCase(),
 			password: encryptedPassword,

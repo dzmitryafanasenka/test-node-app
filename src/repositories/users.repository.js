@@ -60,6 +60,7 @@ class UsersRepository {
 
 	async getUser(email, userId) {
 		let result;
+		
 		if (email) {
 			result = await this._users.findOne({
 				where: { email },
