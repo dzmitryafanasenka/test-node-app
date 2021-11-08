@@ -3,6 +3,7 @@ const joi = require('joi');
 
 const AuthService = require('../../services/auth.service').instance();
 const authValidator = require('./validation/index');
+const config = require('../../config');
 const logger = require('../../common/logger')('AuthController');
 const ServiceError = require('../../common/errors/ServiceError');
 
@@ -75,10 +76,17 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 			return res.status(400).send('Invalid link');
 		}
 
-		const response = await AuthService.verifyUser(user);
+		try {
+			await AuthService.verifyUser(user);	
+		} catch (error) {
+			logger.error('Error at the verification method', error);
+			
+			const status = error instanceof ServiceError ? error.status : 500;
 
-		return res.send(response);
-		//res.redirect(`${config.app.client.url}/login`)
+			return res.status(status).send('Internal Server Error');
+		}
+
+		return res.redirect(`${config.app.client.url}`);
 	} catch (error) {
 		if (error instanceof ServiceError) {
 			return res.status(error.status).send(error.message);
