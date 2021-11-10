@@ -3,6 +3,12 @@ class ServiceError extends Error {
 		super(message);
 		this.status = status;
 	}
+	
+	toJSON() {
+		return {
+			message: this.message
+		};
+	}
 }
 
 module.exports = ServiceError;

@@ -15,18 +15,18 @@ userRouter.get('/', auth, async (req, res) => {
 		
 		const response = await userService.getAllUsers();
 		if (!response) {
-			res.status(500).send('Internal Server Error');
+			res.status(500).send({ message: 'Internal Server Error' });
 		}
 
 		return res.send(response);
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -42,11 +42,11 @@ userRouter.get('/:userId', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -75,11 +75,11 @@ userRouter.patch('/:userId', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -99,11 +99,11 @@ userRouter.delete('/:userId', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 

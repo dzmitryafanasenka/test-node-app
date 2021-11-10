@@ -18,7 +18,7 @@ postsRouter.get('/', auth, async (req, res) => {
 		const posts = await PostsService.getAllPosts();
 		res.send(posts);
 	} catch (error) {
-		res.status(500).send('Internal Server Error');
+		res.status(500).send({ message: 'Internal Server Error' });
 		logger.error(error);
 	}
 });
@@ -41,11 +41,11 @@ postsRouter.get('/current', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -73,11 +73,11 @@ postsRouter.post('/', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -107,11 +107,11 @@ postsRouter.put('/:postId', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -128,11 +128,11 @@ postsRouter.delete('/:postId', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 

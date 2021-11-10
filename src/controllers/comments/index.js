@@ -31,11 +31,11 @@ commentsRouter.post('/:postId/comments', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -61,11 +61,11 @@ commentsRouter.put('/:postId/comments/:commentId', auth, async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -81,7 +81,7 @@ commentsRouter.delete('/:postId/comments/:commentId', auth, async (req, res) => 
 		try {
 			joi.assert(dataToDelete, commentsValidator.deleteCommentValidation);
 		} catch (validationError) {
-			return res.status(400).send('Incorrect data');
+			return res.status(400).send({ message: 'Incorrect data' });
 		}
 
 		const response = await CommentsService.deleteComment(commentId, userId);
@@ -90,11 +90,11 @@ commentsRouter.delete('/:postId/comments/:commentId', auth, async (req, res) => 
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 

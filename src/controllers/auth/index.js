@@ -18,7 +18,7 @@ authRouter.post('/signup', async (req, res) => {
 		try {
 			joi.assert({ email, password }, authValidator.signUpValidation);
 		} catch (validationError) {
-			return res.status(400).send(validationError.details);
+			return res.status(400).send({ message: validationError.details });
 		}
 
 		const response = await AuthService.signup({ email, password });
@@ -27,11 +27,11 @@ authRouter.post('/signup', async (req, res) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -53,11 +53,11 @@ authRouter.post('/login', async (req, res, next) => {
 
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
@@ -89,11 +89,11 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 		return res.redirect(`${config.app.client.url}`);
 	} catch (error) {
 		if (error instanceof ServiceError) {
-			return res.status(error.status).send(error.message);
+			return res.status(error.status).send(error.toJSON());
 		}
 		logger.error(error);
 
-		return res.status(500).send('Internal Server Error');
+		return res.status(500).send({ message: 'Internal Server Error' });
 	}
 });
 
