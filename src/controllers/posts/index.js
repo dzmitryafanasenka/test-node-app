@@ -32,7 +32,7 @@ postsRouter.get('/current', auth, async (req, res) => {
 		try {
 			joi.assert({ userId }, postsValidator.getPostValidation);
 		} catch (validationError) {
-			return res.status(400).send('Data is not valid');
+			return res.status(400).send({ message: 'Data is not valid' });
 		}
 
 		const response = await PostsService.getUserPosts(userId);
@@ -65,7 +65,7 @@ postsRouter.post('/', auth, async (req, res) => {
 		try {
 			joi.assert(newPostData, postsValidator.addPostValidation);
 		} catch (validationError) {
-			return res.status(400).send('Data is not valid');
+			return res.status(400).send({ message: 'Data is not valid' });
 		}
 		const response = await PostsService.createPost(newPostData);
 
@@ -98,7 +98,7 @@ postsRouter.put('/:postId', auth, async (req, res) => {
 		try {
 			joi.assert(newPostData, postsValidator.updatePostValidation);
 		} catch (validationError) {
-			return res.status(400).send('Data is not valid');
+			return res.status(400).send({ message: 'Data is not valid' });
 		}
 
 		const response = await PostsService.updatePost(newPostData, user);

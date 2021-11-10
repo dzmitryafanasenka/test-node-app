@@ -81,7 +81,7 @@ authRouter.get('/verify/:id/:token', async (req, res) => {
 		} catch (verificationError) {
 			logger.error('Validation failed at the verification method', verificationError);
 
-			return res.status(400).send('Invalid link');
+			return res.status(400).send({ message: 'Invalid link' });
 		}
 
 		await AuthService.verifyUser(user, token);

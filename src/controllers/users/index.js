@@ -58,7 +58,7 @@ userRouter.patch('/:userId', auth, async (req, res) => {
 		logger.debug(`Updating the user - [ ${userId} ].`);
 
 		if (userId !== req.params.userId) {
-			return res.status(403).send('Forbidden');
+			return res.status(403).send({ message: 'Forbidden' });
 		}
 
 		const dataToUpdate = { nickname, phone, userId };
@@ -66,7 +66,7 @@ userRouter.patch('/:userId', auth, async (req, res) => {
 		try {
 			joi.assert(dataToUpdate, userValidator.updateUserValidation);
 		} catch (validationError) {
-			return res.status(400).send('Invalid data');
+			return res.status(400).send({ message: 'Invalid data' });
 		}
 
 		const response = await userService.updateUser(dataToUpdate);
@@ -90,7 +90,7 @@ userRouter.delete('/:userId', auth, async (req, res) => {
 		logger.debug(`Deleting the user - [ ${userId} ].`);
 
 		if (req.user.userId !== userId) {
-			return res.status(403).send('Forbidden');
+			return res.status(403).send({ message: 'Forbidden' });
 		}
 
 		const response = await userService.deleteUser(userId);

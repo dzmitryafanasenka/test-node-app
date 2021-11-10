@@ -22,7 +22,7 @@ commentsRouter.post('/:postId/comments', auth, async (req, res) => {
 		try {
 			joi.assert(dataToCreate, commentsValidator.createCommentValidation);
 		} catch (validationError) {
-			return res.status(400).send('Data is not valid');
+			return res.status(400).send({ message: 'Data is not valid' });
 		}
 
 		const response = await CommentsService.createComment(dataToCreate);
@@ -52,7 +52,7 @@ commentsRouter.put('/:postId/comments/:commentId', auth, async (req, res) => {
 		try {
 			joi.assert(dataToUpdate, commentsValidator.updateCommentValidation);
 		} catch (validationError) {
-			return res.status(400).send('Incorrect data');
+			return res.status(400).send({ message: 'Incorrect data' });
 		}
 
 		const response = await CommentsService.updateComment({ dataToUpdate, commentId, userId });

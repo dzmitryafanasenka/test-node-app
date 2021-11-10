@@ -44,7 +44,7 @@ class App {
 		this.express.use('/posts', commentsController);
 
 		this.express.use((req, res, next) => {
-			res.status(404).send('Not found');
+			res.status(404).send({ message: 'Not found' });
 		});
 
 		this.express.listen(PORT, () => {
