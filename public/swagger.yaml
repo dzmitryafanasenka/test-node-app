@@ -1,11 +1,14 @@
 openapi: 3.0.0
+
 info:
-  version: 1.0.2
+  version: 1.0.3
   title: Node js Blog API
+
 servers:
   - url: 'http://178.124.178.6:3000/'
   - url: 'http://127.0.0.1:3000/'
   - url: 'http://127.0.0.1:3001/'
+
 paths:
   /users:
     get:
@@ -624,3 +627,69 @@ components:
       properties:
         body:
           type: string
+          
+  responses:
+    400:
+      description: Bad Request
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
+    401:
+      description: Unauthorized
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
+
+    403:
+      description: Forbidden
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
+
+    404:
+      description: Not Found
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
+
+    500:
+      description: Internal Server Error
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
+
+    503:
+      description: Service Unavailable
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error message
